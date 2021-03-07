@@ -8,7 +8,8 @@ void main() {
         saveLocale: true,
         supportedLocales: [Locale('ar', 'SA'),Locale('en', 'US')],
         path: 'assets/lang',
-        child: MyApp()),
+        child: MyApp(),
+    ),
   );
 }
 

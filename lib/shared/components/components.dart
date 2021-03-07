@@ -77,3 +77,51 @@ Widget inputField(
     ),
   );
 }
+
+class ImageContainer extends StatelessWidget {
+  const ImageContainer({
+    Key key,
+    this.onTap,
+    this.text,
+  }) : super(key: key);
+
+  final Function onTap;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Column(
+        children: [
+          GestureDetector(
+            onTap: onTap,
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.23,
+              width: MediaQuery.of(context).size.width / 2.4,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(17),
+                color: Color(0xFFF5F5F5),
+              ),
+              child: Center(
+                  child: Icon(
+                    Icons.camera_alt_outlined,
+                    color: Color(0xFF273370),
+                    size: 20,
+                  )),
+            ),
+          ),
+          SizedBox(
+            height: 5,
+          ),
+          Text(
+            text,
+            style: TextStyle(
+              fontSize: 11,
+              color: Color(0xFF6A6A6A),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

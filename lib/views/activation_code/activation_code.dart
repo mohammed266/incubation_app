@@ -2,14 +2,15 @@ import 'dart:async';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:incubation_app/views/home/home.dart';
+import 'activation_code_controller.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class PinCodeVerificationScreen extends StatefulWidget {
   final String phoneNumber;
+  final String pass;
 
-  PinCodeVerificationScreen(this.phoneNumber);
+  PinCodeVerificationScreen({this.phoneNumber, this.pass});
 
   @override
   _PinCodeVerificationScreenState createState() =>
@@ -31,6 +32,8 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
 
   @override
   void initState() {
+    ActivationCodeController.activationCode(
+        context: context, pass: widget.pass, userName: widget.phoneNumber);
     onTapRecognizer = TapGestureRecognizer()
       ..onTap = () {
         Navigator.pop(context);
@@ -219,30 +222,35 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                             height: 50,
                             child: FlatButton(
                               onPressed: () {
-                                formKey.currentState.validate();
-                                // conditions for validating
-                                if (currentText.length != 4) {
-                                  errorController.add(ErrorAnimationType
-                                      .shake); // Triggering error shake animation
-                                  setState(() {
-                                    hasError = true;
-                                  });
-                                } else {
-                                  setState(() {
-                                    hasError = false;
-                                    scaffoldKey.currentState
-                                        .showSnackBar(SnackBar(
-                                           content: Text("Aye!!"),
-                                      duration: Duration(seconds: 2),
-                                    ));
-                                  });
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => HomeScreen(),
-                                    ),
-                                  );
-                                }
+                                ActivationCodeController.checkCode(
+                                    userName: widget.phoneNumber,
+                                    pass: widget.pass,
+                                    context: context,
+                                    code: currentText);
+                                // formKey.currentState.validate();
+                                // // conditions for validating
+                                // if (currentText.length != 4) {
+                                //   errorController.add(ErrorAnimationType
+                                //       .shake); // Triggering error shake animation
+                                //   setState(() {
+                                //     hasError = true;
+                                //   });
+                                // } else {
+                                //   setState(() {
+                                //     hasError = false;
+                                //     scaffoldKey.currentState
+                                //         .showSnackBar(SnackBar(
+                                //       content: Text("Aye!!"),
+                                //       duration: Duration(seconds: 2),
+                                //     ));
+                                //   });
+                                //   Navigator.push(
+                                //     context,
+                                //     MaterialPageRoute(
+                                //       builder: (_) => HomeScreen(),
+                                //     ),
+                                //   );
+                                // }
                               },
                               child: Center(
                                   child: Text(

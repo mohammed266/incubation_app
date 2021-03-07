@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:incubation_app/shared/components/components.dart';
-import 'package:incubation_app/views/activation_code/activation_code.dart';
-import 'package:incubation_app/views/login/login.dart';
+import 'package:incubation_app/views/signup/signup_controller.dart';
+import '../../shared/components/components.dart';
+import '../activation_code/activation_code.dart';
+import '../login/login.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override
@@ -17,7 +18,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   String _email;
   String _password;
   bool _obscuredText = true;
-  _toggle(){
+  bool _signUpLoading = false;
+  _toggle() {
     setState(() {
       _obscuredText = !_obscuredText;
     });
@@ -88,8 +90,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             children: [
                               Text(
                                 'name'.tr().toString(),
-                                style:
-                                TextStyle(fontSize: 15, color: Color(0xFF273370)),
+                                style: TextStyle(
+                                    fontSize: 15, color: Color(0xFF273370)),
                               ),
                               SizedBox(
                                 height: 5,
@@ -98,13 +100,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 onChanged: (value) {},
                                 onSave: (value) {
                                   setState(() {
-                                    value = _name;
+                                    _name = value;
                                   });
                                 },
                                 validate: (value) {
-                                  if(value.toString().isEmpty){
-                                    return"enter the name".tr().toString();
-                                  }else{
+                                  if (value.toString().isEmpty) {
+                                    return "enter the name".tr().toString();
+                                  } else {
                                     return null;
                                   }
                                 },
@@ -118,8 +120,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               ),
                               Text(
                                 'phone number'.tr().toString(),
-                                style:
-                                TextStyle(fontSize: 15, color: Color(0xFF273370)),
+                                style: TextStyle(
+                                    fontSize: 15, color: Color(0xFF273370)),
                               ),
                               SizedBox(
                                 height: 5,
@@ -128,14 +130,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 onChanged: (v) {},
                                 onSave: (value) {
                                   setState(() {
-                                    value = _phone;
+                                    _phone = value;
                                   });
                                 },
                                 secure: false,
                                 validate: (value) {
-                                  if(value.toString().isEmpty){
-                                    return"enter phone number1".tr().toString();
-                                  }else{
+                                  if (value.toString().isEmpty) {
+                                    return "enter phone number1"
+                                        .tr()
+                                        .toString();
+                                  } else {
                                     return null;
                                   }
                                 },
@@ -148,24 +152,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               ),
                               Text(
                                 'e-mail'.tr().toString(),
-                                style:
-                                TextStyle(fontSize: 15, color: Color(0xFF273370)),
+                                style: TextStyle(
+                                    fontSize: 15, color: Color(0xFF273370)),
                               ),
                               SizedBox(
                                 height: 5,
                               ),
                               inputField(
                                 onChanged: (v) {},
-                                onSave: (value){
+                                onSave: (value) {
                                   setState(() {
-                                    value = _email;
+                                    _email = value;
                                   });
                                 },
                                 secure: false,
-                                validate: (value){
-                                  if(value.toString().isEmpty){
-                                    return"enter e-mail".tr().toString();
-                                  }else{
+                                validate: (value) {
+                                  if (value.toString().isEmpty) {
+                                    return "enter e-mail".tr().toString();
+                                  } else {
                                     return null;
                                   }
                                 },
@@ -178,24 +182,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               ),
                               Text(
                                 'password'.tr().toString(),
-                                style:
-                                TextStyle(fontSize: 15, color: Color(0xFF273370)),
+                                style: TextStyle(
+                                    fontSize: 15, color: Color(0xFF273370)),
                               ),
                               SizedBox(
                                 height: 5,
                               ),
                               inputField(
                                 onChanged: (v) {},
-                                onSave: (value){
+                                onSave: (value) {
                                   setState(() {
-                                    value = _password;
+                                    _password=value;
                                   });
                                 },
                                 secure: _obscuredText,
-                                validate: (value){
-                                  if(value.toString().isEmpty){
-                                    return"enter password".tr().toString();
-                                  }else if (value.toString().length < 8) {
+                                validate: (value) {
+                                  if (value.toString().isEmpty) {
+                                    return "enter password".tr().toString();
+                                  } else if (value.toString().length < 8) {
                                     return 'weak password1'.tr().toString();
                                   }
                                   return null;
@@ -206,7 +210,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   onTap: _toggle,
                                   child: Icon(
                                     Icons.visibility_outlined,
-                                    color: _obscuredText ? Colors.black12 : Colors.black54,
+                                    color: _obscuredText
+                                        ? Colors.black12
+                                        : Colors.black54,
                                     size: 17,
                                   ),
                                 ),
@@ -218,29 +224,40 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         SizedBox(
                           height: 35,
                         ),
-                        defaultButton(
-                          function: () {
-                            if (!_formKey.currentState.validate()) {
-                              print('unValidated');
-                              return;
-                            } else {
-                              print(' validated');
-                              _formKey.currentState.save();
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => PinCodeVerificationScreen("+8801376221100"),
-                                ),
-                              );
-                              print(_name);
-                              print(_email);
-                              print(_password);
-                              print(_phone);
-                            }
-                          },
-                          color: Color(0xFFA6C437),
-                          text: 'sign up'.tr().toString(),
-                        ),
+                        _signUpLoading
+                            ? Center(child: CircularProgressIndicator(backgroundColor: Color(0xFF273370),))
+                            : defaultButton(
+                                function: () {
+                                  if (!_formKey.currentState.validate()) {
+                                    print('unValidated');
+                                    return;
+                                  } else {
+                                    print(' validated');
+                                    _formKey.currentState.save();
+
+                                    setState(() {
+                                      _signUpLoading = true;
+                                    });
+                                    SignUpController.signUp(
+                                            thirdName: _name,
+                                            email: _email,
+                                            pass: _password,
+                                            phone: _phone,
+                                            context: context)
+                                        .then((value) {
+                                      setState(() {
+                                        _signUpLoading = false;
+                                      });
+                                    });
+                                    // print(_name);
+                                    // print(_email);
+                                    // print(_password);
+                                    // print(_phone);
+                                  }
+                                },
+                                color: Color(0xFFA6C437),
+                                text: 'sign up'.tr().toString(),
+                              ),
                         SizedBox(
                           height: 40,
                         ),

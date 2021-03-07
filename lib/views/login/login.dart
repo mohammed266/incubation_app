@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:incubation_app/shared/components/components.dart';
-import 'package:incubation_app/views/home/home.dart';
-import 'package:incubation_app/views/signup/signup.dart';
+import 'package:incubation_app/views/login/login_controller.dart';
+import '../../shared/components/components.dart';
+import '../forget_password/forget_password,dart.dart';
+import '../home/home.dart';
+import '../signup/signup.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -15,7 +17,8 @@ class _LoginScreenState extends State<LoginScreen> {
   String _password;
   bool checkedValue = true;
   bool _obscuredText = true;
-  _toggle(){
+  bool _logInLoading = false;
+  _toggle() {
     setState(() {
       _obscuredText = !_obscuredText;
     });
@@ -86,8 +89,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             children: [
                               Text(
                                 'phone number'.tr().toString(),
-                                style:
-                                TextStyle(fontSize: 15, color: Color(0xFF273370)),
+                                style: TextStyle(
+                                    fontSize: 15, color: Color(0xFF273370)),
                               ),
                               SizedBox(
                                 height: 5,
@@ -120,8 +123,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               Text(
                                 'password'.tr().toString(),
-                                style:
-                                TextStyle(fontSize: 15, color: Color(0xFF273370)),
+                                style: TextStyle(
+                                    fontSize: 15, color: Color(0xFF273370)),
                               ),
                               SizedBox(
                                 height: 5,
@@ -155,7 +158,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   onTap: _toggle,
                                   child: Icon(
                                     Icons.visibility_outlined,
-                                    color: _obscuredText ? Colors.black12 : Colors.black54,
+                                    color: _obscuredText
+                                        ? Colors.black12
+                                        : Colors.black54,
                                     size: 17,
                                   ),
                                 ),
@@ -198,12 +203,27 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                   Text(
                                     "save login data".tr().toString(),
-                                    style: TextStyle(fontSize: 10,color: Color(0xFFBEBEBE)),
+                                    style: TextStyle(
+                                        fontSize: 10, color: Color(0xFFBEBEBE)),
                                   ),
                                   Spacer(),
-                                  Text(
-                                    'forget pass'.tr().toString(),
-                                    style: TextStyle(fontSize: 10,color: Color(0xFF273370),fontWeight: FontWeight.w500),
+                                  InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) =>
+                                              ForgetPasswordScreen(),
+                                        ),
+                                      );
+                                    },
+                                    child: Text(
+                                      'forget pass'.tr().toString(),
+                                      style: TextStyle(
+                                          fontSize: 10,
+                                          color: Color(0xFF273370),
+                                          fontWeight: FontWeight.w500),
+                                    ),
                                   ),
                                 ],
                               ),
@@ -213,27 +233,39 @@ class _LoginScreenState extends State<LoginScreen> {
                         SizedBox(
                           height: 35,
                         ),
-                        defaultButton(
-                          function: () {
-                            if (!_formKey.currentState.validate()) {
-                              print('unValidated');
-                              return;
-                            } else {
-                              print(' validated');
-                              _formKey.currentState.save();
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => HomeScreen(),
-                                ),
-                              );
-                              print(_password);
-                              print(_phone);
-                            }
-                          },
-                          color: Color(0xFFA6C437),
-                          text: 'login'.tr().toString(),
-                        ),
+                        _logInLoading
+                            ? Center(
+                                child: CircularProgressIndicator(
+                                backgroundColor: Color(0xFF273370),
+                              ))
+                            : defaultButton(
+                                function: () {
+                                  if (!_formKey.currentState.validate()) {
+                                    print('unValidated');
+                                    setState(() {
+                                      _logInLoading = true;
+                                    });
+                                    return;
+                                  } else {
+                                    LoginController.login(
+                                        'omarx@gmail.com', '123456789m!');
+                                    _formKey.currentState.save();
+                                    // Navigator.push(
+                                    //   context,
+                                    //   MaterialPageRoute(
+                                    //     builder: (_) => HomeScreen(),
+                                    //   ),
+                                    // );
+                                    setState(() {
+                                      _logInLoading = false;
+                                    });
+                                    print(_password);
+                                    print(_phone);
+                                  }
+                                },
+                                color: Color(0xFFA6C437),
+                                text: 'login'.tr().toString(),
+                              ),
                         SizedBox(
                           height: 35,
                         ),

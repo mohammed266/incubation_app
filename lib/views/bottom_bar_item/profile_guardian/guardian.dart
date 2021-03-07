@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:incubation_app/shared/components/components.dart';
+import '../../child_profile/child_profile.dart';
+import '../../add_child/add_child.dart';
+import '../../../shared/components/components.dart';
+import '../../alerts/alerts.dart';
+import '../../edit_guardian_profile/edit_guardian_profile.dart';
+import '../../search/search.dart';
 
 class GuardianScreen extends StatelessWidget {
   @override
@@ -34,7 +39,12 @@ class GuardianScreen extends StatelessWidget {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            //
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => AlertsScreen(),
+                              ),
+                            );
                           },
                           child: Icon(
                             Icons.notifications_none,
@@ -47,7 +57,12 @@ class GuardianScreen extends StatelessWidget {
                         ),
                         GestureDetector(
                           onTap: () {
-                            //
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => SearchScreen(),
+                              ),
+                            );
                           },
                           child: Icon(
                             Icons.search,
@@ -88,15 +103,31 @@ class GuardianScreen extends StatelessWidget {
                                 ),
                               ),
                               child: CircleAvatar(
-                                backgroundImage: AssetImage('assets/images/image4.png'),
+                                backgroundImage:
+                                    AssetImage('assets/images/image4.png'),
                               ),
                             ),
-                            Text('اسم الام او الاب',style: TextStyle(color: Colors.white,fontSize: 13),),
-                            Text('010254652155',style: TextStyle(color: Colors.white,fontSize: 10),),
+                            Text(
+                              'اسم الام او الاب',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 13),
+                            ),
+                            Text(
+                              '010254652155',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 10),
+                            ),
                             Spacer(),
                             defaultButton(
-                              text: 'تعديل الملف الشخصي',
-                              function: (){},
+                              text: 'edit profile'.tr().toString(),
+                              function: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => EditGuardianProfileScreen(),
+                                  ),
+                                );
+                              },
                               color: Colors.black.withOpacity(0.05),
                               r: 20,
                             ),
@@ -111,22 +142,93 @@ class GuardianScreen extends StatelessWidget {
                 height: 30,
               ),
               Padding(
-                padding: EdgeInsets.only(left: 20,right: 20),
+                padding: EdgeInsets.only(left: 20, right: 20),
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 20,vertical: 30),
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
                   width: double.infinity,
-                  height: 120,
+                  // height: 120,
                   decoration: BoxDecoration(
                     color: Color(0xFFF8F8F8),
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: defaultButton(
-                    text: 'إضافة طفل',
-                    function: (){
-                      //
-                    },
-                    color: Color(0xFFA6C437),
-                    r: 10,
+                  child: Column(
+                    children: [
+                      ListView(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        children: [
+                          InkWell(
+                            onTap: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (_)=> ChildProfileScreen(),),);
+                            },
+                            child: Container(
+                              padding: EdgeInsets.only(right: 5,left: 20,top: 5,bottom: 5),
+                              height: 60,
+                              decoration: BoxDecoration(
+                                color: Color(0xFF273370),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Row(
+                                children: [
+                                  Image.asset('assets/images/image8.png',height: 50,width: 50,),
+                                  Spacer(
+                                    flex: 1,
+                                  ),
+                                  Text('اسم الطفل',style: TextStyle(fontSize: 13,color: Colors.white),),
+                                  Spacer(
+                                    flex: 1,
+                                  ),
+                                  Text('مفعل',style: TextStyle(color: Color(0xFFA6C437),fontSize: 10),),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Container(
+                            padding: EdgeInsets.only(right: 5,left: 20,top: 5,bottom: 5),
+                            height: 60,
+                            decoration: BoxDecoration(
+                              color: Color(0xFFE5E5E5),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Row(
+                              children: [
+                                Image.asset('assets/images/image8.png',height: 50,width: 50,),
+                                Spacer(
+                                  flex: 1,
+                                ),
+                                Text('اسم الطفل',style: TextStyle(fontSize: 13,color: Color(0xFFAAAAAA)),),
+                                Spacer(
+                                  flex: 1,
+                                ),
+                                Text('غير مفعل',style: TextStyle(color: Color(0xFFAAAAAA),fontSize: 10),),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Container(
+                        height: 45,
+                        child: defaultButton(
+                          text: 'add child'.tr().toString(),
+                          function: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => AddChildScreen(),
+                              ),
+                            );
+                          },
+                          color: Color(0xFFA6C437),
+                          r: 10,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),

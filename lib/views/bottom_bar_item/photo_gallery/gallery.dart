@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:incubation_app/views/alerts/alerts.dart';
+import 'package:incubation_app/views/search/search.dart';
 
 class GalleryScreen extends StatelessWidget {
   @override
@@ -30,7 +32,7 @@ class GalleryScreen extends StatelessWidget {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        //
+                        Navigator.push(context, MaterialPageRoute(builder: (_)=> AlertsScreen(),),);
                       },
                       child: Icon(
                         Icons.notifications_none,
@@ -43,7 +45,7 @@ class GalleryScreen extends StatelessWidget {
                     ),
                     GestureDetector(
                       onTap: () {
-                        //
+                        Navigator.push(context, MaterialPageRoute(builder: (_)=> SearchScreen(),),);
                       },
                       child: Icon(
                         Icons.search,
@@ -63,7 +65,7 @@ class GalleryScreen extends StatelessWidget {
                     crossAxisCount: 2,
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 10,
-                    childAspectRatio: 2/2.3,
+                    childAspectRatio: 2/2,
                   ),
                   itemBuilder: (_, i) => Container(
                     decoration: BoxDecoration(

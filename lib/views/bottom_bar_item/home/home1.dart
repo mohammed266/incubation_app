@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import '../../alerts/alerts.dart';
+import '../../book_service/book_service.dart';
+import '../../daycare/daycare.dart';
+import '../../search/search.dart';
 import '../../../shared/components/components.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -45,7 +49,7 @@ class _Home1ScreenState extends State<Home1Screen> {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            //
+                           Navigator.push(context, MaterialPageRoute(builder: (_)=> AlertsScreen(),),);
                           },
                           child: Icon(
                             Icons.notifications_none,
@@ -58,7 +62,7 @@ class _Home1ScreenState extends State<Home1Screen> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            //
+                            Navigator.push(context, MaterialPageRoute(builder: (_)=> SearchScreen(),),);
                           },
                           child: Icon(
                             Icons.search,
@@ -72,94 +76,91 @@ class _Home1ScreenState extends State<Home1Screen> {
                     bottom: 0,
                     left: 0,
                     right: 0,
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 20, right: 20),
-                      child: Column(
-                        children: [
-                          Container(
-                            height: 170,
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              color: Colors.transparent,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: CarouselSlider(
-                              items: [
-                                Image.asset(
-                                  'assets/images/image4.png',
-                                  fit: BoxFit.fill,
-                                ),
-                                Image.asset(
-                                  'assets/images/image3.png',
-                                  fit: BoxFit.fill,
-                                ),
-                                Image.asset(
-                                  'assets/images/image6.png',
-                                  fit: BoxFit.fill,
-                                ),
-                              ],
-                              options: CarouselOptions(
-                                  aspectRatio: 2 / 2,
-                                  autoPlay: true,
-                                  scrollDirection: Axis.horizontal,
-                                  autoPlayInterval: Duration(seconds: 3),
-                                  autoPlayAnimationDuration:
-                                      Duration(milliseconds: 800),
-                                  autoPlayCurve: Curves.fastOutSlowIn,
-                                  enlargeCenterPage: true,
-                                  initialPage: 0,
-                                  enableInfiniteScroll: true,
-                                  reverse: false,
-                                  onPageChanged: (index1, T) {
-                                    setState(() {
-                                      currentIndex = index1;
-                                    });
-                                  }
-                                  // onPageChanged: callbackFunction,
-                                  ),
-                            ),
+                    child: Column(
+                      children: [
+                        Container(
+                          height: 170,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.transparent,
+                            borderRadius: BorderRadius.circular(20),
                           ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                width: 8.0,
-                                height: 8.0,
-                                margin: EdgeInsets.symmetric(
-                                    vertical: 10.0, horizontal: 2.0),
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: currentIndex == index1
-                                        ? Color(0xFFF7941D)
-                                        : Color(0xFFECEFFF)),
+                          child: CarouselSlider(
+                            items: [
+                              Image.asset(
+                                'assets/images/image4.png',
+                                fit: BoxFit.fill,
                               ),
-                              Container(
-                                width: 8.0,
-                                height: 8.0,
-                                margin: EdgeInsets.symmetric(
-                                    vertical: 10.0, horizontal: 2.0),
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: currentIndex == index2
-                                        ? Color(0xFFF7941D)
-                                        : Color(0xFFECEFFF)),
+                              Image.asset(
+                                'assets/images/image3.png',
+                                fit: BoxFit.fill,
                               ),
-                              Container(
-                                width: 8.0,
-                                height: 8.0,
-                                margin: EdgeInsets.symmetric(
-                                    vertical: 10.0, horizontal: 2.0),
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: currentIndex == index3
-                                        ? Color(0xFFF7941D)
-                                        : Color(0xFFECEFFF)),
+                              Image.asset(
+                                'assets/images/image6.png',
+                                fit: BoxFit.fill,
                               ),
                             ],
-                          )
-                        ],
-                      ),
+                            options: CarouselOptions(
+                                aspectRatio: 2 / 2,
+                                autoPlay: true,
+                                scrollDirection: Axis.horizontal,
+                                autoPlayInterval: Duration(seconds: 3),
+                                autoPlayAnimationDuration:
+                                    Duration(milliseconds: 800),
+                                autoPlayCurve: Curves.fastOutSlowIn,
+                                enlargeCenterPage: true,
+                                initialPage: 0,
+                                enableInfiniteScroll: true,
+                                reverse: false,
+                                onPageChanged: (index1, T) {
+                                  setState(() {
+                                    currentIndex = index1;
+                                  });
+                                }
+                                // onPageChanged: callbackFunction,
+                                ),
+                          ),
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 8.0,
+                              height: 8.0,
+                              margin: EdgeInsets.symmetric(
+                                  vertical: 10.0, horizontal: 2.0),
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: currentIndex == index1
+                                      ? Color(0xFFF7941D)
+                                      : Color(0xFFECEFFF)),
+                            ),
+                            Container(
+                              width: 8.0,
+                              height: 8.0,
+                              margin: EdgeInsets.symmetric(
+                                  vertical: 10.0, horizontal: 2.0),
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: currentIndex == index2
+                                      ? Color(0xFFF7941D)
+                                      : Color(0xFFECEFFF)),
+                            ),
+                            Container(
+                              width: 8.0,
+                              height: 8.0,
+                              margin: EdgeInsets.symmetric(
+                                  vertical: 10.0, horizontal: 2.0),
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: currentIndex == index3
+                                      ? Color(0xFFF7941D)
+                                      : Color(0xFFECEFFF)),
+                            ),
+                          ],
+                        )
+                      ],
                     ),
                   ),
                 ],
@@ -178,20 +179,26 @@ class _Home1ScreenState extends State<Home1Screen> {
               SizedBox(
                 height: 20,
               ),
-              Padding(
-                padding: EdgeInsets.only(left: 20, right: 20),
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 160,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    shrinkWrap: true,
-                    itemCount: 6,
-                    itemBuilder: (i, _) => Padding(
-                      padding: EdgeInsets.only(
-                        left: EasyLocalization.of(context).locale == Locale('en', 'US') ? 0 : 10,
-                        right: EasyLocalization.of(context).locale == Locale('en', 'US') ? 10 : 0,
-                      ),
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: 160,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  itemCount: 6,
+                  itemBuilder: (i, _) => Padding(
+                    padding: EdgeInsets.only(
+                      left: EasyLocalization.of(context).locale == Locale('en', 'US') ? 0 : 10,
+                      right: EasyLocalization.of(context).locale == Locale('en', 'US') ? 10 : 0,
+                    ),
+                    child: InkWell(
+                      onTap: (){
+                        Navigator.push(context,
+                          MaterialPageRoute(
+                            builder: (_) => DaycareScreen(),
+                          ),
+                        );
+                      },
                       child: Container(
                         width: MediaQuery.of(context).size.width * 0.8,
                         decoration: BoxDecoration(
@@ -252,7 +259,11 @@ class _Home1ScreenState extends State<Home1Screen> {
                 padding: EdgeInsets.only(left: 20, right: 20),
                 child: defaultButton(
                   function: () {
-                    //
+                    Navigator.push(context,
+                      MaterialPageRoute(
+                        builder: (_)=> BookServiceScreen(),
+                      ),
+                    );
                   },
                   text: 'book service'.tr().toString(),
                   color: Color(0xFFA6C437),

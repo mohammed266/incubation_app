@@ -27,7 +27,7 @@ class _ChooseLangScreenState extends State<ChooseLangScreen> {
               width: MediaQuery.of(context).size.width * 0.7,
             ),
             SizedBox(
-              height:MediaQuery.of(context).size.height* 0.1,
+              height:MediaQuery.of(context).size.height* 0.14,
             ),
             GestureDetector(
               onTap: () {
