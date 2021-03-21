@@ -1,16 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:incubation_app/shared/components/components.dart';
-
+import 'center_department_controller.dart';
 
 class CenterDepartmentsScreen extends StatefulWidget {
   @override
-  _CenterDepartmentsScreenState createState() => _CenterDepartmentsScreenState();
+  _CenterDepartmentsScreenState createState() =>
+      _CenterDepartmentsScreenState();
 }
 
 class _CenterDepartmentsScreenState extends State<CenterDepartmentsScreen> {
-  ScrollController controller = ScrollController(keepScrollOffset: true,);
-  double _isActive = 1;
+  CenterDepartmentController controller = CenterDepartmentController();
+
+  @override
+  void initState() {
+    controller.getCenterDepartment().then((value) {
+      setState(() {
+        controller.loading = false;
+      });
+    });
+    createVariables();
+    super.initState();
+  }
+  // List<bool> audioSelectedList = [];
+  createVariables() {
+    _selectedItems = List.generate(controller.listOfCenterDep.length, (i) => false);
+  }
+  // bool _isActive = false;
+  List<bool> _selectedItems = List<bool>();
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +35,6 @@ class _CenterDepartmentsScreenState extends State<CenterDepartmentsScreen> {
       child: Scaffold(
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
-          controller: controller,
           child: Column(
             children: [
               Container(
@@ -50,7 +66,7 @@ class _CenterDepartmentsScreenState extends State<CenterDepartmentsScreen> {
                     ),
                     SizedBox(
                       width: EasyLocalization.of(context).locale ==
-                          Locale('en', 'US')
+                              Locale('en', 'US')
                           ? MediaQuery.of(context).size.width / 5.2
                           : MediaQuery.of(context).size.width / 3.9,
                     ),
@@ -65,7 +81,7 @@ class _CenterDepartmentsScreenState extends State<CenterDepartmentsScreen> {
                 height: 30,
               ),
               //
-              GestureDetector(
+              /*GestureDetector(
                 onTap: () {
                   setState(() {
                     if(_isActive == 2){
@@ -710,10 +726,123 @@ class _CenterDepartmentsScreenState extends State<CenterDepartmentsScreen> {
                       ],
                     ),
                   ),
+                ), */
+              controller.loading ? Text("loading") : ListView.builder(
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: controller.listOfCenterDep.length,
+                itemBuilder: (context, index) => Container(
+                  child: Column(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          if(_selectedItems.contains(index)){
+                            setState(()  {
+                              // audioSelectedList[index] = true;
+                              //   _isActive = 1;
+                              // } else {
+                              //   _isActive = 2;
+                              // }
+
+                               createVariables();
+                               _selectedItems[index] = true;
+
+
+                            });
+                          }
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                            left: 20,
+                            right: 20,
+                          ),
+                          child: Container(
+                            padding: EdgeInsets.only(
+                              left: 20,
+                              right: 20,
+                            ),
+                            width: double.infinity,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: Color(0xFFFCFCFC),
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                                color: _selectedItems.contains(index)
+                                    ? Color(0xFFF7941D)
+                                    : Color(0xFFFCFCFC),
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                Text(
+                                  '${controller.listOfCenterDep[index].name}',
+                                  // 'day care department'.tr().toString(),
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color: _selectedItems.contains(index)
+                                        ? Color(0xFFF7941D)
+                                        : Color(0xFFAAAAAA),
+                                  ),
+                                ),
+                                Spacer(),
+                                Icon(
+                                  _selectedItems.contains(index)
+                                      ? Icons.keyboard_arrow_up_rounded
+                                      : Icons.keyboard_arrow_down_rounded,
+                                  color: _selectedItems.contains(index)
+                                      ? Color(0xFFF7941D)
+                                      : Color(0xFFAAAAAA),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      if (_selectedItems.contains(index))
+                        Padding(
+                          padding:
+                              EdgeInsets.only(left: 20, right: 20, bottom: 20),
+                          child: Container(
+                            // height: 50,
+                            width: double.infinity,
+                            // color: Colors.red,
+                            child: Column(
+                              children: [
+                                Container(
+                                  height: 150,
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(25),
+                                    image: DecorationImage(
+                                      image: NetworkImage(
+                                        '${controller.listOfCenterDep[index].img}',
+                                      ),
+                                      fit: BoxFit.fill,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Text(
+                                  '${controller.listOfCenterDep[index].content}',
+                                  style: TextStyle(fontSize: 12),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
+              ),
+
               //
               Padding(
-                padding: EdgeInsets.only(left: 20,right: 20,bottom: 20),
+                padding: EdgeInsets.only(left: 20, right: 20, bottom: 20),
                 child: Container(
                   padding: EdgeInsets.all(20),
                   width: double.infinity,
@@ -728,18 +857,24 @@ class _CenterDepartmentsScreenState extends State<CenterDepartmentsScreen> {
                       BoxShadow(
                         color: Colors.grey.withOpacity(0.3),
                         blurRadius: 50,
-                        offset: Offset(0,25),
+                        offset: Offset(0, 25),
                       ),
                     ],
                   ),
                   child: Column(
                     children: [
-                      Text('do not hesitate to book'.tr().toString(),style: TextStyle(fontSize: 18,color: Color(0xFFF7941D)),),
+                      Text(
+                        'do not hesitate to book'.tr().toString(),
+                        style:
+                            TextStyle(fontSize: 18, color: Color(0xFFF7941D)),
+                      ),
                       SizedBox(
                         height: 10,
                       ),
-                      Text('superHeroes Land'.tr().toString(),
-                        style: TextStyle(fontSize: 12,color: Color(0xFFAAAAAA)),
+                      Text(
+                        'superHeroes Land'.tr().toString(),
+                        style:
+                            TextStyle(fontSize: 12, color: Color(0xFFAAAAAA)),
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(
@@ -748,7 +883,7 @@ class _CenterDepartmentsScreenState extends State<CenterDepartmentsScreen> {
                       defaultButton(
                         color: Color(0xFFA6C437),
                         text: 'book now'.tr().toString(),
-                        function: (){
+                        function: () {
                           //
                         },
                       ),

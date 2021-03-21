@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'guardian_controller.dart';
 import '../../child_profile/child_profile.dart';
 import '../../add_child/add_child.dart';
 import '../../../shared/components/components.dart';
@@ -7,7 +8,24 @@ import '../../alerts/alerts.dart';
 import '../../edit_guardian_profile/edit_guardian_profile.dart';
 import '../../search/search.dart';
 
-class GuardianScreen extends StatelessWidget {
+class GuardianScreen extends StatefulWidget {
+  @override
+  _GuardianScreenState createState() => _GuardianScreenState();
+}
+
+class _GuardianScreenState extends State<GuardianScreen> {
+  GuardianController controller = GuardianController();
+
+  @override
+  void initState() {
+    controller.getGuardian().then((value) {
+      setState(() {
+        controller.loading = false;
+      });
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -90,21 +108,26 @@ class GuardianScreen extends StatelessWidget {
                             SizedBox(
                               height: 10,
                             ),
-                            Container(
-                              padding: EdgeInsets.all(2),
-                              margin: EdgeInsets.all(8),
-                              height: 60,
-                              width: 60,
-                              decoration: BoxDecoration(
-                                color: Color(0xFFF7941D),
-                                borderRadius: BorderRadius.circular(30),
-                                border: Border.all(
-                                  color: Colors.white,
+                            InkWell(
+                              onTap: () async {
+                                // await controller.getImage();
+                              },
+                              child: Container(
+                                padding: EdgeInsets.all(2),
+                                margin: EdgeInsets.all(8),
+                                height: 60,
+                                width: 60,
+                                decoration: BoxDecoration(
+                                  color: Color(0xFFF7941D),
+                                  borderRadius: BorderRadius.circular(30),
+                                  border: Border.all(
+                                    color: Colors.white,
+                                  ),
                                 ),
-                              ),
-                              child: CircleAvatar(
-                                backgroundImage:
-                                    AssetImage('assets/images/image4.png'),
+                                child: CircleAvatar(
+                                  backgroundImage:
+                                      AssetImage('assets/images/image4.png'),
+                                ),
                               ),
                             ),
                             Text(
@@ -153,16 +176,64 @@ class GuardianScreen extends StatelessWidget {
                   ),
                   child: Column(
                     children: [
-                      ListView(
+                      // ListView(
+                      //   shrinkWrap: true,
+                      //   physics: NeverScrollableScrollPhysics(),
+                      //   children: [
+                      //     Container(
+                      //       padding: EdgeInsets.only(
+                      //           right: 5, left: 20, top: 5, bottom: 5),
+                      //       height: 60,
+                      //       decoration: BoxDecoration(
+                      //         color: Color(0xFF273370),
+                      //         borderRadius: BorderRadius.circular(10),
+                      //       ),
+                      //       child: Row(
+                      //         children: [
+                      //           Image.asset(
+                      //             'assets/images/image8.png',
+                      //             height: 50,
+                      //             width: 50,
+                      //           ),
+                      //           Spacer(
+                      //             flex: 1,
+                      //           ),
+                      //           Text(
+                      //             'اسم الطفل',
+                      //             style: TextStyle(
+                      //                 fontSize: 13, color: Colors.white),
+                      //           ),
+                      //           Spacer(
+                      //             flex: 1,
+                      //           ),
+                      //           Text(
+                      //             'مفعل',
+                      //             style: TextStyle(
+                      //                 color: Color(0xFFA6C437), fontSize: 10),
+                      //           ),
+                      //         ],
+                      //       ),
+                      //     ),
+                      //   ],
+                      // ),
+                      controller.loading ? Center(child: Text("loading")) : ListView.builder(
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
-                        children: [
-                          InkWell(
-                            onTap: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (_)=> ChildProfileScreen(),),);
+                        itemCount: controller.listOfChild.length,
+                        itemBuilder: (_, i) => Padding(
+                          padding: EdgeInsets.only(bottom: 10),
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => ChildProfileScreen(id: controller.listOfChild[i].id,),
+                                ),
+                              );
                             },
                             child: Container(
-                              padding: EdgeInsets.only(right: 5,left: 20,top: 5,bottom: 5),
+                              padding: EdgeInsets.only(
+                                  right: 5, left: 20, top: 5, bottom: 5),
                               height: 60,
                               decoration: BoxDecoration(
                                 color: Color(0xFF273370),
@@ -170,44 +241,32 @@ class GuardianScreen extends StatelessWidget {
                               ),
                               child: Row(
                                 children: [
-                                  Image.asset('assets/images/image8.png',height: 50,width: 50,),
+                                  Image.network(
+                                    '${controller.listOfChild[i].img}',
+                                    height: 50,
+                                    width: 50,
+                                  ),
                                   Spacer(
                                     flex: 1,
                                   ),
-                                  Text('اسم الطفل',style: TextStyle(fontSize: 13,color: Colors.white),),
+                                  Text(
+                                    '${controller.listOfChild[i].name}',
+                                    style: TextStyle(
+                                        fontSize: 13, color: Colors.white),
+                                  ),
                                   Spacer(
                                     flex: 1,
                                   ),
-                                  Text('مفعل',style: TextStyle(color: Color(0xFFA6C437),fontSize: 10),),
+                                  Text(
+                                    '${controller.listOfChild[i].status}',
+                                    style: TextStyle(
+                                        color: Color(0xFFA6C437), fontSize: 10),
+                                  ),
                                 ],
                               ),
                             ),
                           ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Container(
-                            padding: EdgeInsets.only(right: 5,left: 20,top: 5,bottom: 5),
-                            height: 60,
-                            decoration: BoxDecoration(
-                              color: Color(0xFFE5E5E5),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Row(
-                              children: [
-                                Image.asset('assets/images/image8.png',height: 50,width: 50,),
-                                Spacer(
-                                  flex: 1,
-                                ),
-                                Text('اسم الطفل',style: TextStyle(fontSize: 13,color: Color(0xFFAAAAAA)),),
-                                Spacer(
-                                  flex: 1,
-                                ),
-                                Text('غير مفعل',style: TextStyle(color: Color(0xFFAAAAAA),fontSize: 10),),
-                              ],
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                       SizedBox(
                         height: 20,

@@ -5,10 +5,10 @@ import 'package:easy_localization/easy_localization.dart';
 void main() {
   runApp(
     EasyLocalization(
-        saveLocale: true,
-        supportedLocales: [Locale('ar', 'SA'),Locale('en', 'US')],
-        path: 'assets/lang',
-        child: MyApp(),
+      saveLocale: true,
+      supportedLocales: [Locale('ar', 'SA'), Locale('en', 'US')],
+      path: 'assets/lang',
+      child: MyApp(),
     ),
   );
 }

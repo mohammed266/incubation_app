@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+import 'connect_us_controller.dart';
 import '../../../shared/components/components.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class ConnectUsScreen extends StatefulWidget {
   @override
@@ -8,10 +12,22 @@ class ConnectUsScreen extends StatefulWidget {
 }
 
 class _ConnectUsScreenState extends State<ConnectUsScreen> {
-  List<String> date = ['لا', 'نعم'];
+  ConnectUsController controller = ConnectUsController();
+  @override
+  void initState() {
+    controller.getConnectUs().then((value) {
+      setState(() {
+        controller.loading = false;
+      });
+    });
+    super.initState();
+  }
 
+  List<String> ddl = ["ججز زيارة", "استفسار عن أسعار", "أخرى"];
   String _newValue;
-
+  String _name;
+  String _email;
+  String _message;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -29,7 +45,7 @@ class _ConnectUsScreenState extends State<ConnectUsScreen> {
                   right: 20,
                 ),
                 width: double.infinity,
-                height: 90,
+                height: 70,
                 decoration: BoxDecoration(
                   color: Color(0xFF273370),
                 ),
@@ -60,24 +76,53 @@ class _ConnectUsScreenState extends State<ConnectUsScreen> {
                 ),
               ),
               Container(
-                padding: EdgeInsets.only(bottom: 15, left: 30, right: 30),
+                // padding: EdgeInsets.only(bottom: 15, left: 30, right: 30),
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height / 2.5,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/images/map.png'),
-                    fit: BoxFit.fill,
-                  ),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                child: Stack(
+                  // mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    defaultButton(
-                      text: 'directions'.tr().toString(),
-                      color: Color(0xFFA6C437),
-                      function: () {
-                        //
-                      },
+                    controller.loading
+                        ? Center(child: Text('..loading'))
+                        : GoogleMap(
+                            markers: {
+                              Marker(
+                                markerId: MarkerId('id-1'),
+                                position: LatLng(24.7241502, 47.3830568),
+                                icon: BitmapDescriptor.defaultMarker,
+                              ),
+                            },
+                            mapType: MapType.normal,
+                            myLocationEnabled: true,
+                            zoomControlsEnabled: false,
+                            initialCameraPosition: CameraPosition(
+                              target: LatLng(double.parse(controller.latLog[0]),
+                                  double.parse(controller.latLog[1])),
+                              zoom: 8.0,
+                            ),
+                          ),
+                    Positioned(
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: Padding(
+                        padding:
+                            EdgeInsets.only(bottom: 10, left: 30, right: 30),
+                        child: defaultButton(
+                          text: 'directions'.tr().toString(),
+                          color: Color(0xFFA6C437),
+                          function: () {
+                            // HtmlWidget(
+                            //   controller.connectUsModel.googleMapIframe,
+                            //   webView: true,
+                            // );
+                            controller.openMap(
+                              double.parse(controller.latLog[0]),
+                              double.parse(controller.latLog[1]),
+                            );
+                          },
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -95,88 +140,105 @@ class _ConnectUsScreenState extends State<ConnectUsScreen> {
                     SizedBox(
                       height: 20,
                     ),
-                    inputField(
-                      onSave: (v) {},
-                      onChanged: (v) {},
-                      validate: (v) {},
-                      icon: true,
-                      secure: false,
-                      hint: 'الاسم',
-                      textInputType: TextInputType.name,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    inputField(
-                      onSave: (v) {},
-                      onChanged: (v) {},
-                      validate: (v) {},
-                      icon: true,
-                      secure: false,
-                      hint: 'البريد الالكترونى',
-                      textInputType: TextInputType.emailAddress,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                      height: 45,
-                      padding: EdgeInsets.only(left: 15, right: 15),
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.white,
-                        border: Border.all(
-                          color: Color(0xFFE5E5E5),
-                        ),
+                    Form(
+                      key: controller.connectKey,
+                      child: Column(
+                        children: [
+                          inputField(
+                            onSave: (v) {
+                              _name = v;
+                            },
+                            validate: (v) {},
+                            icon: true,
+                            secure: false,
+                            hint: 'الاسم',
+                            textInputType: TextInputType.name,
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          inputField(
+                            onSave: (v) {
+                              _email = v;
+                            },
+                            onChanged: (v) {},
+                            validate: (v) {},
+                            icon: true,
+                            secure: false,
+                            hint: 'البريد الالكترونى',
+                            textInputType: TextInputType.emailAddress,
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Container(
+                            height: 45,
+                            padding: EdgeInsets.only(left: 15, right: 15),
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.white,
+                              border: Border.all(
+                                color: Color(0xFFE5E5E5),
+                              ),
+                            ),
+                            child: DropdownButton<String>(
+                              underline: Text(''),
+                              items: ddl.map((String value) {
+                                return new DropdownMenuItem<String>(
+                                  value: value,
+                                  child: new Text(value),
+                                );
+                              }).toList(),
+                              onChanged: (newValue) {
+                                setState(() {
+                                  _newValue = newValue;
+                                });
+                              },
+                              value: _newValue,
+                              isExpanded: true,
+                              hint: Text(
+                                'حجز زيارة',
+                                style: TextStyle(
+                                    fontSize: 12, color: Color(0xFFBEBEBE)),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Container(
+                            padding: EdgeInsets.only(
+                                left: 10, right: 10, bottom: 10),
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                                color: Color(0xFFE5E5E5),
+                              ),
+                            ),
+                            child: TextFormField(
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                focusedBorder: InputBorder.none,
+                                enabledBorder: InputBorder.none,
+                                hintText: 'الرسالة',
+                                hintStyle: TextStyle(
+                                    fontSize: 12, color: Color(0xFFBEBEBE)),
+                              ),
+                              maxLines: 4,
+                              onSaved: (v) {
+                                setState(() {
+                                  _message = v;
+                                });
+                              },
+                            ),
+                          ),
+                        ],
                       ),
-                      child: DropdownButton<String>(
-                        underline: Text(''),
-                        items: date.map((String value) {
-                          return new DropdownMenuItem<String>(
-                            value: value,
-                            child: new Text(value),
-                          );
-                        }).toList(),
-                        onChanged: (newValue) {
-                          setState(() {
-                            _newValue = newValue;
-                          });
-                        },
-                        value: _newValue,
-                        isExpanded: true,
-                        hint: Text(
-                          'حجز زيارة',
-                          style:
-                              TextStyle(fontSize: 12, color: Color(0xFFBEBEBE)),
-                        ),
-                      ),
                     ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                      padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                          color: Color(0xFFE5E5E5),
-                        ),
-                      ),
-                      child: TextField(
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          focusedBorder: InputBorder.none,
-                          enabledBorder: InputBorder.none,
-                          hintText: 'الرسالة',
-                          hintStyle:
-                              TextStyle(fontSize: 12, color: Color(0xFFBEBEBE)),
-                        ),
-                        maxLines: 4,
-                      ),
-                    ),
+                    //
                     SizedBox(
                       height: 10,
                     ),
@@ -187,7 +249,28 @@ class _ConnectUsScreenState extends State<ConnectUsScreen> {
                             color: Color(0xFFA6C437),
                             text: 'ارسال',
                             function: () {
-                              //
+                              if (controller.connectKey.currentState
+                                  .validate()) {
+                                controller.connectKey.currentState.save();
+                                controller.sentContact(
+                                  email: _email,
+                                  ddl: _newValue,
+                                  message: _message,
+                                  name: _name,
+                                );
+                                Fluttertoast.showToast(
+                                    msg: "تم ارسال رسالتك بنجاح ",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.CENTER,
+                                    timeInSecForIosWeb: 2,
+                                    backgroundColor: Colors.red,
+                                    textColor: Colors.white,
+                                    fontSize: 16.0);
+                                print(_message);
+                                print(_email);
+                                print(_name);
+                                print(_newValue);
+                              }
                             },
                           ),
                         ),
@@ -196,8 +279,9 @@ class _ConnectUsScreenState extends State<ConnectUsScreen> {
                         ),
                         Expanded(
                           child: InkWell(
-                            onTap: (){
-                              //
+                            onTap: () {
+                              controller.launchURL(
+                                  'tel:${controller.connectUsModel.contactPhone}');
                             },
                             child: Container(
                               height: 45,
@@ -229,66 +313,83 @@ class _ConnectUsScreenState extends State<ConnectUsScreen> {
                     Container(
                       padding: EdgeInsets.all(20),
                       width: double.infinity,
+                      // height: 200,
                       decoration: BoxDecoration(
                         color: Color(0xFFFCFCFC),
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: Column(
-                        children: [
-                          ConnectDetails(
-                            image: 'assets/icons/icon19.png',
-                            title: 'العنوان',
-                            text: 'شارع معاوية بن عبد الله',
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          ConnectDetails(
-                            image: 'assets/icons/icon20.png',
-                            title: 'رقم الجوال',
-                            text: '+9660533322302',
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          ConnectDetails(
-                            image: 'assets/icons/icon21.png',
-                            title: 'البريد الالكترونى',
-                            text: 'info@superheroesland.com',
-                          ),
-                        ],
-                      ),
+                      child: controller.loading
+                          ? Center(child: Text("Loading"))
+                          : ListView.builder(
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemCount:
+                                  controller.connectUsModel.contactInfo.length,
+                              itemBuilder: (_, i) => Padding(
+                                padding: EdgeInsets.only(bottom: 10),
+                                child: ConnectDetails(
+                                  text:
+                                      '${controller.connectUsModel.contactInfo[i].value}',
+                                  title:
+                                      '${controller.connectUsModel.contactInfo[i].name}',
+                                  image:
+                                      '${controller.connectUsModel.contactInfo[i].icon.toString()}',
+                                ),
+                              ),
+                            ),
+                      //     //   image: 'assets/icons/icon19.png',
+                      //     image: 'assets/icons/icon20.png',
+                      //     //   image: 'assets/icons/icon21.png',
                     ),
                     SizedBox(
                       height: 30,
                     ),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'assets/icons/icon1.png',
-                          height: 35,
-                          width: 35,
-                        ),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        Image.asset(
-                          'assets/icons/icon2.png',
-                          height: 35,
-                          width: 35,
-                        ),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        Image.asset(
-                          'assets/icons/icon3.png',
-                          height: 35,
-                          width: 35,
-                        ),
-                      ],
-                    ),
+                    // Row(
+                    //   crossAxisAlignment: CrossAxisAlignment.center,
+                    //   mainAxisAlignment: MainAxisAlignment.center,
+                    //   children: [
+                    //     Image.asset(
+                    //       'assets/icons/icon1.png',
+                    //     ),
+                    //     Image.asset(
+                    //       'assets/icons/icon2.png',
+                    //       height: 35,
+                    //       width: 35,
+                    //     ),
+                    //     SizedBox(
+                    //       width: 20,
+                    //     ),
+                    //     Image.asset(
+                    //       'assets/icons/icon3.png',
+                    //       height: 35,
+                    //       width: 35,
+                    //     ),
+                    //   ],
+                    // ),
+                    controller.loading
+                        ? Center(child: Text("Loading"))
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: controller.connectUsModel.social
+                                .map((e) => InkWell(
+                                      onTap: () {
+                                        controller.launchURL(e.iconLink);
+                                      },
+                                      child: Container(
+                                        height: 30,
+                                        width: 30,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                          image: DecorationImage(
+                                            image: NetworkImage(e.icon),
+                                            fit: BoxFit.fill,
+                                          ),
+                                        ),
+                                      ),
+                                    ))
+                                .toList(),
+                          ),
                     SizedBox(
                       height: 35,
                     ),
@@ -325,7 +426,7 @@ class ConnectDetails extends StatelessWidget {
             color: Colors.white,
             borderRadius: BorderRadius.circular(20),
           ),
-          child: Image.asset(image),
+          child: Image.network(image),
         ),
         SizedBox(
           width: 10,

@@ -1,10 +1,12 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:incubation_app/views/login/login_controller.dart';
+import 'login_controller.dart';
 import '../../shared/components/components.dart';
 import '../forget_password/forget_password,dart.dart';
 import '../home/home.dart';
 import '../signup/signup.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -18,10 +20,34 @@ class _LoginScreenState extends State<LoginScreen> {
   bool checkedValue = true;
   bool _obscuredText = true;
   bool _logInLoading = false;
+  var myToken;
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   _toggle() {
     setState(() {
       _obscuredText = !_obscuredText;
     });
+  }
+
+  savePref({String phone, String pass}) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.setString("phone", phone);
+    preferences.setString("password", pass);
+    print(preferences.getString("phone"));
+    print(preferences.getString("password"));
+  }
+
+
+  @override
+  void initState() {
+    savePref();
+    _firebaseMessaging.getToken().then((String token){
+      assert(token != null);
+      setState(() {
+        myToken = token;
+      });
+      print(myToken);
+      });
+    super.initState();
   }
 
   @override
@@ -103,7 +129,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 },
                                 onSave: (value) {
                                   setState(() {
-                                    value = _phone;
+                                    _phone = value;
                                   });
                                 },
                                 secure: false,
@@ -140,7 +166,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 },
                                 onSave: (value) {
                                   setState(() {
-                                    value = _password;
+                                    _password = value;
                                   });
                                 },
                                 validate: (value) {
@@ -239,28 +265,21 @@ class _LoginScreenState extends State<LoginScreen> {
                                 backgroundColor: Color(0xFF273370),
                               ))
                             : defaultButton(
-                                function: () {
+                                function: () async {
                                   if (!_formKey.currentState.validate()) {
                                     print('unValidated');
+                                    return;
+                                  } else {
                                     setState(() {
                                       _logInLoading = true;
                                     });
-                                    return;
-                                  } else {
-                                    LoginController.login(
-                                        'omarx@gmail.com', '123456789m!');
                                     _formKey.currentState.save();
-                                    // Navigator.push(
-                                    //   context,
-                                    //   MaterialPageRoute(
-                                    //     builder: (_) => HomeScreen(),
-                                    //   ),
-                                    // );
+                                    await LoginController.login(
+                                        _phone, _password, context);
                                     setState(() {
                                       _logInLoading = false;
                                     });
-                                    print(_password);
-                                    print(_phone);
+                                    savePref(pass: _password, phone: _phone);
                                   }
                                 },
                                 color: Color(0xFFA6C437),
@@ -328,9 +347,10 @@ class _LoginScreenState extends State<LoginScreen> {
                               Text(
                                 'new account'.tr().toString(),
                                 style: TextStyle(
-                                    fontSize: 11,
-                                    color: Color(0xFFA6C437),
-                                    fontWeight: FontWeight.w700),
+                                  fontSize: 11,
+                                  color: Color(0xFFA6C437),
+                                  fontWeight: FontWeight.w700,
+                                ),
                               ),
                             ],
                           ),

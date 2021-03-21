@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:incubation_app/views/child_profile/controllers/child_details.dart';
+import 'package:incubation_app/views/child_profile/models/child_details.dart';
 import '../edit_child_profile/edit_child_profile.dart';
 import 'components/messages.dart';
 import 'components/reports.dart';
@@ -7,24 +9,42 @@ import '../../shared/components/components.dart';
 import 'components/images.dart';
 
 class ChildProfileScreen extends StatefulWidget {
+  ChildProfileScreen(
+      {Key key,this.id})
+      : super(key: key);
+  var id;
   @override
   _ChildProfileScreenState createState() => _ChildProfileScreenState();
 }
 
 class _ChildProfileScreenState extends State<ChildProfileScreen> {
   int _currentIndex = 0;
+  bool _isLoading = true;
+  ChildDetailsModel _childDetailsModel;
+
+  initState(){
+    getInfo();
+    super.initState();
+  }
+
+  getInfo()async{
+    _childDetailsModel = await ChildDetailsController().getDetails(widget.id);
+    setState(()=> _isLoading = false);
+  }
 
   @override
   Widget build(BuildContext context) {
+
     List<Widget> listScreen = [
       ImagesScreen(),
       ReportsScreen(),
       MessagesScreen(),
     ];
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-        body: SingleChildScrollView(
+        body: _isLoading ? Text('Loading') : SingleChildScrollView(
           child: Column(
             children: [
               Stack(
@@ -163,7 +183,7 @@ class _ChildProfileScreenState extends State<ChildProfileScreen> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (_) =>
-                                              EditChildProfileScreen(),
+                                              EditChildProfileScreen(childDetailsModel: _childDetailsModel,),
                                         ),
                                       );
                                     },

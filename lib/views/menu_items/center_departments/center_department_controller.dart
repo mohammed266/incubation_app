@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'who_are_we_model.dart';
+import 'center_department_model.dart';
 
 
-class WhoAreWeController {
-  List<WhoAreWeModel> listOfWhoAreWe = [];
+class CenterDepartmentController {
+  List<CenterDepartmentModel> listOfCenterDep = [];
   bool loading = true;
-  Future getWhoAreWe() async {
-    String url = "https://superheroesland.com/wp-json/siteapi/v1/page/about";
+  Future getCenterDepartment() async {
+    String url = "https://superheroesland.com/wp-json/wp/v2/centers?page=1&per_page=22";
 
     http.Response response = await http.get(url, headers: {
       'User-Agent': 'PostmanRuntime/7.26.10',
@@ -19,7 +19,7 @@ class WhoAreWeController {
     if (response.statusCode == 200) {
       print(response.body);
       for (var classes in responseDecoded) {
-        listOfWhoAreWe.add(WhoAreWeModel.fromJson(classes));
+        listOfCenterDep.add(CenterDepartmentModel.fromJson(classes));
       }
       print("good");
     } else {

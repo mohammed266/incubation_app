@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'add_child_controller.dart';
 import 'components/attendance_and_departure.dart';
 import 'components/baby_information.dart';
 import 'components/medical_information.dart';
@@ -14,10 +15,12 @@ class _AddChildScreenState extends State<AddChildScreen> {
   int currentIndex = 0;
   ScrollController controller = ScrollController(initialScrollOffset: 0.0);
   ScrollController _controller = ScrollController(keepScrollOffset: true);
+  AddChildController addChildController = AddChildController();
   @override
   Widget build(BuildContext context) {
     List<Widget> listScreens = [
       BabyInformationScreen(
+        addChildController: addChildController,
         onSegmentChosen: () {
           setState(() {
             currentIndex = 1;
@@ -28,6 +31,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
         },
       ),
       AttendanceAndDepartureScreen(
+        addChildController: addChildController,
         forward: () {
           setState(() {
             currentIndex = 2;
@@ -47,6 +51,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
         },
       ),
       MedicalInformationScreen(
+        addChildController: addChildController,
         forward1: () {
           setState(() {
             currentIndex = 3;
@@ -67,6 +72,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
         },
       ),
       RequiredDocumentsScreen(
+        addChildController: addChildController,
         back2: (){
           setState(() {
             currentIndex--;
@@ -260,122 +266,3 @@ class _AddChildScreenState extends State<AddChildScreen> {
     );
   }
 }
-// child: Column(
-//   children: <Widget>[
-//     Container(
-//       padding: EdgeInsets.only(
-//         left: 20,
-//         right: 20,
-//       ),
-//       width: double.infinity,
-//       height: 90,
-//       decoration: BoxDecoration(
-//         color: Color(0xFF273370),
-//         borderRadius: BorderRadius.only(
-//           bottomLeft: Radius.circular(20),
-//           bottomRight: Radius.circular(20),
-//         ),
-//       ),
-//       child: Row(
-//         crossAxisAlignment: CrossAxisAlignment.center,
-//         // mainAxisAlignment: MainAxisAlignment.center,
-//         children: [
-//           GestureDetector(
-//             onTap: () {
-//               Navigator.pop(context);
-//             },
-//             child: Icon(
-//               Icons.arrow_back,
-//               color: Colors.white,
-//             ),
-//           ),
-//           SizedBox(
-//             width: EasyLocalization.of(context).locale ==
-//                 Locale('en', 'US')
-//                 ? MediaQuery.of(context).size.width / 3.3
-//                 : MediaQuery.of(context).size.width / 3.5,
-//           ),
-//           Text(
-//             'اضافة طفل',
-//             style: TextStyle(fontSize: 15, color: Colors.white),
-//           ),
-//         ],
-//       ),
-//     ),
-//     Padding(
-//       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-//       child: TabBar(
-//         controller: _tabController,
-//         labelColor: Color(0xFFF7941D),
-//         isScrollable: true,
-//         indicator: BoxDecoration(
-//           borderRadius: BorderRadius.circular(10),
-//           border: Border.all(color: Color(0xFFF7941D)),
-//         ),
-//         indicatorColor: Color(0xFFF7941D),
-//         // labelPadding: EdgeInsets.all(0),
-//         unselectedLabelColor: Colors.grey,
-//         // indicatorWeight: 40,
-//         unselectedLabelStyle: TextStyle(
-//           fontSize: 13,
-//           color: Color(0xFFBEBEBE),
-//           fontWeight: FontWeight.w700,
-//         ),
-//         labelStyle: TextStyle(
-//           fontSize: 13,
-//           fontWeight: FontWeight.w700,
-//         ),
-//         tabs: <Widget>[
-//           Container(
-//             height: 40,
-//             child: Center(
-//               child: Text('معلومات الطفل'),
-//             ),
-//           ),
-//           Text('الحضور والانصراف'),
-//           Text('معلومات طبية'),
-//           Text('المستندات المطلوبه'),
-//         ],
-//       ),
-//     ),
-//     Expanded(
-//       child: TabBarView(
-//         controller: _tabController,
-//         children: <Widget>[
-//           BabyInformationScreen(
-//             onSegmentChosen: (){
-//               setState(() {
-//                 _tabController.index = 1;
-//               });
-//             },
-//           ),
-//           AttendanceAndDepartureScreen(
-//             forward: (){
-//               setState(() {
-//                 _tabController.index = 2;
-//               });
-//             },
-//             back: (){
-//               setState(() {
-//                 _tabController.index--;
-//               });
-//             },
-//           ),
-//           MedicalInformationScreen(
-//             forward1: (){
-//               setState(() {
-//                 _tabController.index = 3;
-//               });
-//             },
-//             back1: (){
-//               setState(() {
-//                 _tabController.index--;
-//               });
-//             },
-//           ),
-//           RequiredDocumentsScreen(),
-//         ],
-//       ),
-//     ),
-//   ],
-// ),

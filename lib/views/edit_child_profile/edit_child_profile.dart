@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import '../child_profile/models/child_details.dart';
+import 'edit_child_controller.dart';
 import 'components/edit_attendance_and_departure.dart';
 import 'components/edit_child_info.dart';
 import 'components/edit_medical_info.dart';
@@ -8,6 +10,10 @@ import 'components/edit_required_documents.dart';
 
 
 class EditChildProfileScreen extends StatefulWidget {
+  final ChildDetailsModel childDetailsModel;
+
+  const EditChildProfileScreen({Key key, this.childDetailsModel}) : super(key: key);
+
   @override
   _EditChildProfileScreenState createState() => _EditChildProfileScreenState();
 }
@@ -15,6 +21,7 @@ class EditChildProfileScreen extends StatefulWidget {
 class _EditChildProfileScreenState extends State<EditChildProfileScreen> {
   ScrollController _controller = ScrollController(keepScrollOffset: true);
   ScrollController controller = ScrollController(initialScrollOffset: 0.0);
+  EditChildController editChildController = EditChildController();
   int currentIndex = 0;
 
   @override
@@ -72,10 +79,22 @@ class _EditChildProfileScreenState extends State<EditChildProfileScreen> {
       //     });
       //   },
       // ),
-      EditChildInfoScreen(),
-      EditAttendanceAndDepartureScreen(),
-      EditMedicalInfoScreen(),
-      EditRequiredDocScreen(),
+      EditChildInfoScreen(
+        editChildController: editChildController,
+        childDetailsModel: widget.childDetailsModel,
+      ),
+      EditAttendanceAndDepartureScreen(
+        editChildController: editChildController,
+        childDetailsModel: widget.childDetailsModel,
+      ),
+      EditMedicalInfoScreen(
+        editChildController: editChildController,
+        childDetailsModel: widget.childDetailsModel,
+      ),
+      EditRequiredDocScreen(
+        editChildController: editChildController,
+        childDetailsModel: widget.childDetailsModel,
+      ),
     ];
     return SafeArea(
       child: Scaffold(

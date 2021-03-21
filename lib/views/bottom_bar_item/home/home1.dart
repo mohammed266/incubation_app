@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:incubation_app/views/bottom_bar_item/home/home_controller.dart';
 import '../../alerts/alerts.dart';
 import '../../book_service/book_service.dart';
 import '../../daycare/daycare.dart';
@@ -13,10 +14,18 @@ class Home1Screen extends StatefulWidget {
 }
 
 class _Home1ScreenState extends State<Home1Screen> {
+  HomeController controller = HomeController();
   int currentIndex = 0;
   int index1 = 0;
   int index2 = 1;
   int index3 = 2;
+
+  @override
+  void initState() {
+    controller.getSliderData();
+    controller.getService();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +58,12 @@ class _Home1ScreenState extends State<Home1Screen> {
                       children: [
                         GestureDetector(
                           onTap: () {
-                           Navigator.push(context, MaterialPageRoute(builder: (_)=> AlertsScreen(),),);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => AlertsScreen(),
+                              ),
+                            );
                           },
                           child: Icon(
                             Icons.notifications_none,
@@ -62,7 +76,12 @@ class _Home1ScreenState extends State<Home1Screen> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (_)=> SearchScreen(),),);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => SearchScreen(),
+                              ),
+                            );
                           },
                           child: Icon(
                             Icons.search,
@@ -81,25 +100,18 @@ class _Home1ScreenState extends State<Home1Screen> {
                         Container(
                           height: 170,
                           width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: Colors.transparent,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
                           child: CarouselSlider(
-                            items: [
-                              Image.asset(
-                                'assets/images/image4.png',
-                                fit: BoxFit.fill,
-                              ),
-                              Image.asset(
-                                'assets/images/image3.png',
-                                fit: BoxFit.fill,
-                              ),
-                              Image.asset(
-                                'assets/images/image6.png',
-                                fit: BoxFit.fill,
-                              ),
-                            ],
+                            items: controller.sliderUrl
+                                .map((e) => Container(
+                                      decoration: BoxDecoration(
+                                          color: Colors.transparent,
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          image: DecorationImage(
+                                              image: NetworkImage(e),
+                                              fit: BoxFit.fill)),
+                                    ))
+                                .toList(),
                             options: CarouselOptions(
                                 aspectRatio: 2 / 2,
                                 autoPlay: true,
@@ -185,26 +197,33 @@ class _Home1ScreenState extends State<Home1Screen> {
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   shrinkWrap: true,
-                  itemCount: 6,
-                  itemBuilder: (i, _) => Padding(
+                  itemCount: controller.listOfService.length,
+                  itemBuilder: (_,i) => Padding(
                     padding: EdgeInsets.only(
-                      left: EasyLocalization.of(context).locale == Locale('en', 'US') ? 0 : 10,
-                      right: EasyLocalization.of(context).locale == Locale('en', 'US') ? 10 : 0,
+                      left: EasyLocalization.of(context).locale ==
+                              Locale('en', 'US')
+                          ? 0
+                          : 10,
+                      right: EasyLocalization.of(context).locale ==
+                              Locale('en', 'US')
+                          ? 10
+                          : 0,
                     ),
                     child: InkWell(
-                      onTap: (){
-                        Navigator.push(context,
-                          MaterialPageRoute(
-                            builder: (_) => DaycareScreen(),
-                          ),
-                        );
+                      onTap: () {
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (_) => DaycareScreen(),
+                        //   ),
+                        // );
                       },
                       child: Container(
                         width: MediaQuery.of(context).size.width * 0.8,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
                           image: DecorationImage(
-                            image: AssetImage('assets/images/image5.png'),
+                            image: NetworkImage('${controller.listOfService[i].img}'),
                           ),
                         ),
                         child: Center(
@@ -220,11 +239,12 @@ class _Home1ScreenState extends State<Home1Screen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  'الرعاية النهارية',
+                                  '${controller.listOfService[i].title}',
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.w500,
-                                      fontSize: 15),
+                                      fontSize: 12,
+                                  ),
                                 ),
                                 SizedBox(
                                   height: 5,
@@ -239,9 +259,11 @@ class _Home1ScreenState extends State<Home1Screen> {
                                   height: 5,
                                 ),
                                 Text(
-                                  '(٤ أسابيع الى ٤ سنوات)',
+                                  '${controller.listOfService[i].shortDesc}',
                                   style: TextStyle(
-                                      color: Colors.white, fontSize: 12),
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                  ),
                                 ),
                               ],
                             ),
@@ -259,9 +281,10 @@ class _Home1ScreenState extends State<Home1Screen> {
                 padding: EdgeInsets.only(left: 20, right: 20),
                 child: defaultButton(
                   function: () {
-                    Navigator.push(context,
+                    Navigator.push(
+                      context,
                       MaterialPageRoute(
-                        builder: (_)=> BookServiceScreen(),
+                        builder: (_) => BookServiceScreen(),
                       ),
                     );
                   },

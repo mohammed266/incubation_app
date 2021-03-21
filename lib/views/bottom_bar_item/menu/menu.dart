@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:incubation_app/views/bottom_bar_item/menu/menu_controller.dart';
 import '../../choose_lang/choose_lang.dart';
 import '../../../shared/components/components.dart';
 import '../../menu_items/lang_dialog/change_lang_dialog.dart';
@@ -11,161 +12,194 @@ import '../../menu_items/center_departments/center_departments.dart';
 import '../../menu_items/who_are_we/who_are_we.dart';
 import '../../search/search.dart';
 
-
 class MenuScreen extends StatefulWidget {
-
   @override
   _MenuScreenState createState() => _MenuScreenState();
 }
 
 class _MenuScreenState extends State<MenuScreen> {
-
-
-
   Future<void> _showDialog() async {
+    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
     String _password;
     bool _obscuredText = true;
-    _toggle(){
+    _toggle() {
       setState(() {
         _obscuredText = !_obscuredText;
       });
     }
-    String _password1;
+
+    String _newPassword;
     bool _obscuredText1 = true;
-    _toggle1(){
+    _toggle1() {
       setState(() {
         _obscuredText1 = !_obscuredText1;
       });
     }
+
     return showDialog(
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(
-            builder: (context, setState){
-          return SingleChildScrollView(
-            child: Column(
-              children: [
-                SizedBox(height: MediaQuery.of(context).size.height* .2),
-                Dialog(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(44),
-                  ),
-                  insetPadding: EdgeInsets.only(
-                    right: 25,
-                    left: 25,
-                  ),
-                  child: Container(
-                    height: MediaQuery.of(context).size.height* 0.5,
-                    width: MediaQuery.of(context).size.width,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height/ 15,
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 10,right: 10),
-                          child: Text('الرقم السرى القديم',style: TextStyle(fontSize: 12,color: Color(0xFFAAAAAA)),),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 10,right: 10),
-                          child: inputField(
-                            onChanged: (v) {},
-                            onSave: (value){
-                              setState(() {
-                                value = _password;
-                              });
-                            },
-                            secure: _obscuredText,
-                            validate: (value){
-                              if(value.toString().isEmpty){
-                                return"enter password".tr().toString();
-                              }else if (value.toString().length < 8) {
-                                return 'weak password1'.tr().toString();
-                              }
-                              return null;
-                            },
-                            textInputType: TextInputType.visiblePassword,
-                            icon: true,
-                            prefix: InkWell(
-                              onTap: _toggle,
-                              child: Icon(
-                                Icons.visibility_outlined,
-                                color: _obscuredText ? Colors.black12 : Colors.black54,
-                                size: 17,
-                              ),
-                            ),
-                            hint: '',
+          builder: (context, setState) {
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  SizedBox(height: MediaQuery.of(context).size.height * .2),
+                  Dialog(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(44),
+                    ),
+                    insetPadding: EdgeInsets.only(
+                      right: 25,
+                      left: 25,
+                    ),
+                    child: Container(
+                      height: MediaQuery.of(context).size.height * 0.55,
+                      width: MediaQuery.of(context).size.width,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height / 15,
                           ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 10,right: 10),
-                          child: Text('الرقم السرى الجديد',style: TextStyle(fontSize: 12,color: Color(0xFFAAAAAA)),),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 10,right: 10),
-                          child: inputField(
-                            onChanged: (v) {},
-                            onSave: (value){
-                              setState(() {
-                                value = _password1;
-                              });
-                            },
-                            secure: _obscuredText1,
-                            validate: (value){
-                              if(value.toString().isEmpty){
-                                return"enter password".tr().toString();
-                              }else if (value.toString().length < 8) {
-                                return 'weak password1'.tr().toString();
-                              }
-                              return null;
-                            },
-                            textInputType: TextInputType.visiblePassword,
-                            icon: true,
-                            prefix: InkWell(
-                              onTap: _toggle1,
-                              child: Icon(
-                                Icons.visibility_outlined,
-                                color: _obscuredText1 ? Colors.black12 : Colors.black54,
-                                size: 17,
-                              ),
+                          Padding(
+                            padding: EdgeInsets.only(left: 10, right: 10),
+                            child: Text(
+                              'الرقم السرى القديم',
+                              style: TextStyle(
+                                  fontSize: 12, color: Color(0xFFAAAAAA)),
                             ),
-                            hint: '',
                           ),
-                        ),
-                        Spacer(),
-                        InkWell(
-                          onTap: () {
-                           Navigator.pop(context);
-                          },
-                          child: Container(
-                            height: 70,
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                bottomRight: Radius.circular(44),
-                                bottomLeft: Radius.circular(44),
-                              ),
-                              color: Color(0xFFA6C437),
+                          Form(
+                            key: _formKey,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(left: 10, right: 10),
+                                  child: inputField(
+                                    onChanged: (v) {},
+                                    onSave: (value) {
+                                        _password = value;
+                                    },
+                                    secure: _obscuredText,
+                                    validate: (value) {
+                                      if (value.toString().isEmpty) {
+                                        return "enter password".tr().toString();
+                                      } else if (value.toString().length < 8) {
+                                        return 'weak password1'.tr().toString();
+                                      }
+                                      return null;
+                                    },
+                                    textInputType:
+                                        TextInputType.visiblePassword,
+                                    icon: true,
+                                    prefix: InkWell(
+                                      onTap: _toggle,
+                                      child: Icon(
+                                        Icons.visibility_outlined,
+                                        color: _obscuredText
+                                            ? Colors.black12
+                                            : Colors.black54,
+                                        size: 17,
+                                      ),
+                                    ),
+                                    hint: '',
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 10, right: 10),
+                                  child: Text(
+                                    'الرقم السرى الجديد',
+                                    style: TextStyle(
+                                        fontSize: 12, color: Color(0xFFAAAAAA)),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 10, right: 10),
+                                  child: inputField(
+                                    onChanged: (v) {},
+                                    onSave: (value) {
+                                        _newPassword = value;
+                                    },
+                                    secure: _obscuredText1,
+                                    validate: (value) {
+                                      if (value.toString().isEmpty) {
+                                        return "enter password".tr().toString();
+                                      } else if (value.toString().length < 8) {
+                                        return 'weak password1'.tr().toString();
+                                      }
+                                      return null;
+                                    },
+                                    textInputType:
+                                        TextInputType.visiblePassword,
+                                    icon: true,
+                                    prefix: InkWell(
+                                      onTap: _toggle1,
+                                      child: Icon(
+                                        Icons.visibility_outlined,
+                                        color: _obscuredText1
+                                            ? Colors.black12
+                                            : Colors.black54,
+                                        size: 17,
+                                      ),
+                                    ),
+                                    hint: '',
+                                  ),
+                                ),
+                              ],
                             ),
-                            child: Center(
+                          ),
+                          Spacer(),
+                          InkWell(
+                            onTap: () {
+                              if (!_formKey.currentState.validate()) {
+                                print('unValidated');
+                                return;
+                              } else {
+                                ChangePassController.login(
+                                  context: context,
+                                  pass: _password,
+                                  newPass: _newPassword,
+                                );
+                                _formKey.currentState.save();
+                                print(_password);
+                                print(_newPassword);
+                                Navigator.pop(context);
+                              }
+                            },
+                            child: Container(
+                              height: 60,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                  bottomRight: Radius.circular(44),
+                                  bottomLeft: Radius.circular(44),
+                                ),
+                                color: Color(0xFFA6C437),
+                              ),
+                              child: Center(
                                 child: Text(
                                   'save'.tr().toString(),
-                                  style:
-                                  TextStyle(fontSize: 15, color: Colors.white,fontWeight: FontWeight.w500),
-                                )),
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          );
+                ],
+              ),
+            );
           },
         );
       },
@@ -253,9 +287,10 @@ class _MenuScreenState extends State<MenuScreen> {
                 image: 'assets/icons/icon11.png',
                 title: 'center departments'.tr().toString(),
                 onTap: () {
-                  Navigator.push(context,
+                  Navigator.push(
+                    context,
                     MaterialPageRoute(
-                      builder: (_)=> CenterDepartmentsScreen(),
+                      builder: (_) => CenterDepartmentsScreen(),
                     ),
                   );
                 },
@@ -265,9 +300,10 @@ class _MenuScreenState extends State<MenuScreen> {
                 image: 'assets/icons/icon11.png',
                 title: 'center classes'.tr().toString(),
                 onTap: () {
-                  Navigator.push(context,
+                  Navigator.push(
+                    context,
                     MaterialPageRoute(
-                      builder: (_)=> CenterClassesScreen(),
+                      builder: (_) => CenterClassesScreen(),
                     ),
                   );
                 },
@@ -293,9 +329,10 @@ class _MenuScreenState extends State<MenuScreen> {
                 image: 'assets/icons/icon14.png',
                 title: 'conditions'.tr().toString(),
                 onTap: () {
-                  Navigator.push(context,
+                  Navigator.push(
+                    context,
                     MaterialPageRoute(
-                      builder: (_)=> TermsAndConditionsScreen(),
+                      builder: (_) => TermsAndConditionsScreen(),
                     ),
                   );
                 },
@@ -305,9 +342,10 @@ class _MenuScreenState extends State<MenuScreen> {
                 image: 'assets/icons/icon15.png',
                 title: 'call us'.tr().toString(),
                 onTap: () {
-                  Navigator.push(context,
+                  Navigator.push(
+                    context,
                     MaterialPageRoute(
-                      builder: (_)=> ConnectUsScreen(),
+                      builder: (_) => ConnectUsScreen(),
                     ),
                   );
                 },
@@ -317,7 +355,12 @@ class _MenuScreenState extends State<MenuScreen> {
                 image: 'assets/icons/icon16.png',
                 title: 'sign out'.tr().toString(),
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (_)=> ChooseLangScreen(),),);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => ChooseLangScreen(),
+                    ),
+                  );
                 },
               ),
               SizedBox(

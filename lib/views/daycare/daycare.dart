@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:incubation_app/shared/components/components.dart';
-import 'package:incubation_app/views/book_service/book_service.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+import '../../shared/components/components.dart';
+import '../book_service/book_service.dart';
+import '../menu_items/center_classes/center_classes_model.dart';
 
 
 class DaycareScreen extends StatelessWidget {
+  DaycareScreen(this.classDetails);
+  CenterClassesModel classDetails;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -67,7 +71,7 @@ class DaycareScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
                         image: DecorationImage(
-                          image: AssetImage('assets/images/image4.png'),
+                          image: NetworkImage(classDetails.img),
                           fit: BoxFit.fill,
                         ),
                       ),
@@ -83,34 +87,32 @@ class DaycareScreen extends StatelessWidget {
                 children: [
                   Padding(
                     padding: EdgeInsets.only(bottom: 10),
-                    child: Text('نقدم في سوبرهيوز لاند خدمة الرعاية والضيافة للأطفال الصغار الخارقين من الساعة ٧ صباحاً الى ١ ظهراً. يحتوي مركزنا على فصول آمنة ,صحية ,مليئة بالأنشطة التعليمية والترفيهية الفريدة من نوعها و مجهزة بعناية حسب أعمار .الاطفال من ٤ أسابيع الى ٤ سنوات',
-                      style: TextStyle(fontSize: 12,color: Color(0xFF6A6A6A)),
-                    ),
+                    child: HtmlWidget(classDetails.content),
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 30),
-                    child: Text('في فصول سوبرهيروز لاند كل يوم مليء بأنشطة مصممة حول ستة مجالات تطوير رئيسية لطفلك :',
-                      style: TextStyle(fontSize: 13,color: Color(0xFFF7941D)),
-                    ),
-                  ),
-                  Text('١ - تطوير المهارات اللغوية  Language development',
-                    style: TextStyle(fontSize: 12,color: Color(0xFF273370)),
-                  ),
-                  Text('٢ - الوظائف التنفيذية Executive Function',
-                    style: TextStyle(fontSize: 12,color: Color(0xFF273370)),
-                  ),
-                  Text('٣ - التنمية الاجتماعية والعاطفية Social and Emotional',
-                    style: TextStyle(fontSize: 12,color: Color(0xFF273370)),
-                  ),
-                  Text('٤ - التنمية البدنية والصحي Development Physical Development and Wellness',
-                    style: TextStyle(fontSize: 12,color: Color(0xFF273370)),
-                  ),
-                  Text('٥ - التطور المعرفي Cognitive Development',
-                      style: TextStyle(fontSize: 12,color: Color(0xFF273370)),
-                  ),
-                  Text('٦- التعبير الإبداعي Creative Expression',
-                    style: TextStyle(fontSize: 12,color: Color(0xFF273370)),
-                  ),
+                  // Padding(
+                  //   padding: EdgeInsets.only(bottom: 30),
+                  //   child: Text('في فصول سوبرهيروز لاند كل يوم مليء بأنشطة مصممة حول ستة مجالات تطوير رئيسية لطفلك :',
+                  //     style: TextStyle(fontSize: 13,color: Color(0xFFF7941D)),
+                  //   ),
+                  // ),
+                  // Text('١ - تطوير المهارات اللغوية  Language development',
+                  //   style: TextStyle(fontSize: 12,color: Color(0xFF273370)),
+                  // ),
+                  // Text('٢ - الوظائف التنفيذية Executive Function',
+                  //   style: TextStyle(fontSize: 12,color: Color(0xFF273370)),
+                  // ),
+                  // Text('٣ - التنمية الاجتماعية والعاطفية Social and Emotional',
+                  //   style: TextStyle(fontSize: 12,color: Color(0xFF273370)),
+                  // ),
+                  // Text('٤ - التنمية البدنية والصحي Development Physical Development and Wellness',
+                  //   style: TextStyle(fontSize: 12,color: Color(0xFF273370)),
+                  // ),
+                  // Text('٥ - التطور المعرفي Cognitive Development',
+                  //     style: TextStyle(fontSize: 12,color: Color(0xFF273370)),
+                  // ),
+                  // Text('٦- التعبير الإبداعي Creative Expression',
+                  //   style: TextStyle(fontSize: 12,color: Color(0xFF273370)),
+                  // ),
                   SizedBox(
                     height: 30,
                   ),

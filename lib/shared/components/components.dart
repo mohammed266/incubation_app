@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
+import 'dart:io';
 
+import 'package:flutter/material.dart';
 
 Widget defaultButton({
   text,
@@ -29,25 +30,27 @@ Widget defaultButton({
   );
 }
 
-Widget inputField(
-    {String hint,
-      bool secure,
-      TextInputType textInputType,
-      bool icon = false,
-      Function validate,
-      Function onSave,
-      Function onChanged,
-      Widget prefix,
-      Color color = Colors.white,
-    }) {
+Widget inputField({
+  TextEditingController controller,
+  String hint,
+  bool secure,
+  TextInputType textInputType,
+  bool icon = false,
+  Function validate,
+  Function onSave,
+  Function onChanged,
+  Widget prefix,
+  Color color = Colors.white,
+}) {
   return TextFormField(
+    controller: controller,
     validator: validate,
     onSaved: onSave,
     onChanged: onChanged,
     keyboardType: textInputType,
     obscureText: secure,
     decoration: InputDecoration(
-      contentPadding: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
+      contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       fillColor: color,
       hintText: hint,
       hintStyle: TextStyle(
@@ -81,12 +84,14 @@ Widget inputField(
 class ImageContainer extends StatelessWidget {
   const ImageContainer({
     Key key,
+    this.image,
     this.onTap,
     this.text,
   }) : super(key: key);
 
   final Function onTap;
   final String text;
+  final File image;
 
   @override
   Widget build(BuildContext context) {
@@ -100,14 +105,18 @@ class ImageContainer extends StatelessWidget {
               width: MediaQuery.of(context).size.width / 2.4,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(17),
+                image:
+                    DecorationImage(image: FileImage(image), fit: BoxFit.cover),
                 color: Color(0xFFF5F5F5),
               ),
-              child: Center(
-                  child: Icon(
-                    Icons.camera_alt_outlined,
-                    color: Color(0xFF273370),
-                    size: 20,
-                  )),
+              child: image.path ==''
+                  ? Center(
+                      child: Icon(
+                      Icons.camera_alt_outlined,
+                      color: Color(0xFF273370),
+                      size: 20,
+                    ))
+                  : SizedBox(),
             ),
           ),
           SizedBox(

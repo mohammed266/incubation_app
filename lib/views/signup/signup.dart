@@ -1,9 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:incubation_app/views/signup/signup_controller.dart';
+import 'signup_controller.dart';
 import '../../shared/components/components.dart';
-import '../activation_code/activation_code.dart';
 import '../login/login.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -234,7 +233,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   } else {
                                     print(' validated');
                                     _formKey.currentState.save();
-
                                     setState(() {
                                       _signUpLoading = true;
                                     });

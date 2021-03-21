@@ -1,9 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:incubation_app/views/alerts/alerts.dart';
+import 'package:incubation_app/views/bottom_bar_item/photo_gallery/gallery_controller.dart';
 import 'package:incubation_app/views/search/search.dart';
 
-class GalleryScreen extends StatelessWidget {
+class GalleryScreen extends StatefulWidget {
+  @override
+  _GalleryScreenState createState() => _GalleryScreenState();
+}
+
+class _GalleryScreenState extends State<GalleryScreen> {
+
+  GalleryController controller = GalleryController();
+
+  @override
+  void initState() {
+    controller.getGalleryData().then((value) {
+      setState(() {
+        controller.loading=false;
+      });
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -57,10 +76,10 @@ class GalleryScreen extends StatelessWidget {
               ),
               Padding(
                 padding: EdgeInsets.all(20),
-                child: GridView.builder(
+                child: controller.loading ? Text("loading") : GridView.builder(
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
-                  itemCount: 8,
+                  itemCount: controller.galleryModel.length,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 10,
@@ -71,7 +90,7 @@ class GalleryScreen extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       image: DecorationImage(
-                        image: AssetImage('assets/images/image7.png'),
+                        image: NetworkImage('${controller.galleryModel[i].img}'),
                         fit: BoxFit.fill,
                       ),
                     ),

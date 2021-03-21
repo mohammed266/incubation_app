@@ -16,7 +16,7 @@ class ActivationCodeController {
 
     Map<String, String> headers = {
       'authorization': basicAuth,
-      'Authorization': 'Basic MDEwOTQ1MTkyMjE6bWVkbzEyMw==',
+      'Authorization': '$basicAuth',
       'User-Agent': 'PostmanRuntime/7.26.8',
       'Accept': '*/*',
       'Accept-Encoding': 'gzip, deflate, br',
@@ -61,13 +61,13 @@ class ActivationCodeController {
       // Navigator.push(
       //   context,
       //   MaterialPageRoute(
-      //     builder: (_) => PinCodeVerificationScreen("+8801376221100"),
+      //     builder: (_) => PinCodeVerificationScreen(),
       //   ),
       // );
       print("HI");
       print("Right CODE");
     } else {
-      print(response.body);
+      print(json.decode(response.body));
       print("Error");
     }
   }

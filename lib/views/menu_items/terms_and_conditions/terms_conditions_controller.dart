@@ -1,13 +1,12 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'who_are_we_model.dart';
+import 'terms_conditions_model.dart';
 
-
-class WhoAreWeController {
-  List<WhoAreWeModel> listOfWhoAreWe = [];
+class TermsAndConditionsController {
+  List<TermsConditionsModel> listOfTerms = [];
   bool loading = true;
-  Future getWhoAreWe() async {
-    String url = "https://superheroesland.com/wp-json/siteapi/v1/page/about";
+  Future getTermsConditions() async {
+    String url = "https://superheroesland.com/wp-json/siteapi/v1/page/terms";
 
     http.Response response = await http.get(url, headers: {
       'User-Agent': 'PostmanRuntime/7.26.10',
@@ -19,8 +18,14 @@ class WhoAreWeController {
     if (response.statusCode == 200) {
       print(response.body);
       for (var classes in responseDecoded) {
-        listOfWhoAreWe.add(WhoAreWeModel.fromJson(classes));
+        listOfTerms.add(TermsConditionsModel.fromJson(classes));
       }
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(
+      //     builder: (_) => HomeScreen(),
+      //   ),
+      // );
       print("good");
     } else {
       print(response.body);
