@@ -83,7 +83,12 @@ class _ConnectUsScreenState extends State<ConnectUsScreen> {
                   // mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     controller.loading
-                        ? Center(child: Text('..loading'))
+                        ? Center(
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                            Color(0xFF273370)),
+                      ),
+                    )
                         : GoogleMap(
                             markers: {
                               Marker(
@@ -319,7 +324,12 @@ class _ConnectUsScreenState extends State<ConnectUsScreen> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: controller.loading
-                          ? Center(child: Text("Loading"))
+                          ? Center(
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                              Color(0xFF273370)),
+                        ),
+                      )
                           : ListView.builder(
                               shrinkWrap: true,
                               physics: NeverScrollableScrollPhysics(),
@@ -367,7 +377,12 @@ class _ConnectUsScreenState extends State<ConnectUsScreen> {
                     //   ],
                     // ),
                     controller.loading
-                        ? Center(child: Text("Loading"))
+                        ? Center(
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                            Color(0xFF273370)),
+                      ),
+                    )
                         : Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: controller.connectUsModel.social

@@ -1,9 +1,15 @@
+import 'dart:io';
+import 'dart:math';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:incubation_app/views/alerts/alerts_controller.dart';
 import 'login_controller.dart';
 import '../../shared/components/components.dart';
-import '../forget_password/forget_password,dart.dart';
+import '../forget_password/forget_password.dart';
 import '../home/home.dart';
 import '../signup/signup.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,41 +21,16 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  String _phone;
-  String _password;
-  bool checkedValue = true;
+  String phone;
+  String password;
+  bool checkedValue = false;
   bool _obscuredText = true;
   bool _logInLoading = false;
-  var myToken;
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   _toggle() {
     setState(() {
       _obscuredText = !_obscuredText;
     });
   }
-
-  savePref({String phone, String pass}) async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    preferences.setString("phone", phone);
-    preferences.setString("password", pass);
-    print(preferences.getString("phone"));
-    print(preferences.getString("password"));
-  }
-
-
-  @override
-  void initState() {
-    savePref();
-    _firebaseMessaging.getToken().then((String token){
-      assert(token != null);
-      setState(() {
-        myToken = token;
-      });
-      print(myToken);
-      });
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -128,9 +109,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   // });
                                 },
                                 onSave: (value) {
-                                  setState(() {
-                                    _phone = value;
-                                  });
+                                    phone = value;
                                 },
                                 secure: false,
                                 validate: (value) {
@@ -162,12 +141,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                   } else if (value.toString().length >= 8) {
                                     return 'ok';
                                   }
-                                  _password = value;
+                                  password = value;
                                 },
                                 onSave: (value) {
-                                  setState(() {
-                                    _password = value;
-                                  });
+                                  password = value;
                                 },
                                 validate: (value) {
                                   if (value.toString().isEmpty) {
@@ -207,7 +184,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       height: 15,
                                       width: 15,
                                       decoration: BoxDecoration(
-                                        color: checkedValue
+                                        color: !checkedValue
                                             ? Colors.white
                                             : Color(0xFF273370),
                                         border: Border.all(
@@ -261,69 +238,67 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         _logInLoading
                             ? Center(
-                                child: CircularProgressIndicator(
-                                backgroundColor: Color(0xFF273370),
-                              ))
+                            child: CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                  Color(0xFF273370)),
+                            ))
                             : defaultButton(
                                 function: () async {
                                   if (!_formKey.currentState.validate()) {
                                     print('unValidated');
                                     return;
                                   } else {
+                                    _formKey.currentState.save();
                                     setState(() {
                                       _logInLoading = true;
                                     });
-                                    _formKey.currentState.save();
-                                    await LoginController.login(
-                                        _phone, _password, context);
+                                      await LoginController.login(
+                                          phone, password, context,checkedValue);
                                     setState(() {
                                       _logInLoading = false;
                                     });
-                                    savePref(pass: _password, phone: _phone);
+                                    // savePref(pass: _password, phone: _phone);
                                   }
                                 },
                                 color: Color(0xFFA6C437),
                                 text: 'login'.tr().toString(),
                               ),
                         SizedBox(
-                          height: 35,
+                          height: 75,
                         ),
-                        Align(
-                            alignment: Alignment.center,
-                            child: Text('or'.tr().toString())),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              'assets/icons/icon1.png',
-                              height: 35,
-                              width: 35,
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Image.asset(
-                              'assets/icons/icon2.png',
-                              height: 35,
-                              width: 35,
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Image.asset(
-                              'assets/icons/icon3.png',
-                              height: 35,
-                              width: 35,
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 40,
-                        ),
+                        // Align(
+                        //     alignment: Alignment.center,
+                        //     child: Text('or'.tr().toString())),
+                        // SizedBox(
+                        //   height: 15,
+                        // ),
+                        // Row(
+                        //   crossAxisAlignment: CrossAxisAlignment.center,
+                        //   mainAxisAlignment: MainAxisAlignment.center,
+                        //   children: [
+                        //     Image.asset(
+                        //       'assets/icons/icon1.png',
+                        //       height: 35,
+                        //       width: 35,
+                        //     ),
+                        //     SizedBox(
+                        //       width: 10,
+                        //     ),
+                        //     Image.asset(
+                        //       'assets/icons/icon2.png',
+                        //       height: 35,
+                        //       width: 35,
+                        //     ),
+                        //     SizedBox(
+                        //       width: 10,
+                        //     ),
+                        //     Image.asset(
+                        //       'assets/icons/icon3.png',
+                        //       height: 35,
+                        //       width: 35,
+                        //     ),
+                        //   ],
+                        // ),
                         GestureDetector(
                           onTap: () {
                             Navigator.push(

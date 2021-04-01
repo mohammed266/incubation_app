@@ -10,6 +10,7 @@ class WhoAreWeController {
     String url = "https://superheroesland.com/wp-json/siteapi/v1/page/about";
 
     http.Response response = await http.get(url, headers: {
+      'Cookie': 'PHPSESSID=dd3667b54c7e3d25c556cbaffd745863',
       'User-Agent': 'PostmanRuntime/7.26.10',
       'Accept': '*/*',
       'Accept-Encoding': 'gzip, deflate, br',

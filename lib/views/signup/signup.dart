@@ -1,6 +1,11 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:incubation_app/views/alerts/alerts_controller.dart';
+import 'package:incubation_app/views/home/home.dart';
 import 'signup_controller.dart';
 import '../../shared/components/components.dart';
 import '../login/login.dart';
@@ -12,16 +17,29 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  String _name;
-  String _phone;
-  String _email;
-  String _password;
+  String name;
+  String phone;
+  String email;
+  String password;
   bool _obscuredText = true;
   bool _signUpLoading = false;
+  var myToken;
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   _toggle() {
     setState(() {
       _obscuredText = !_obscuredText;
     });
+  }
+  @override
+  void initState() {
+    _firebaseMessaging.getToken().then((String token){
+      assert(token != null);
+      setState(() {
+        myToken = token;
+      });
+      print(myToken);
+    });
+    super.initState();
   }
 
   @override
@@ -98,9 +116,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               inputField(
                                 onChanged: (value) {},
                                 onSave: (value) {
-                                  setState(() {
-                                    _name = value;
-                                  });
+                                    name = value;
                                 },
                                 validate: (value) {
                                   if (value.toString().isEmpty) {
@@ -128,9 +144,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               inputField(
                                 onChanged: (v) {},
                                 onSave: (value) {
-                                  setState(() {
-                                    _phone = value;
-                                  });
+                                    phone = value;
                                 },
                                 secure: false,
                                 validate: (value) {
@@ -160,9 +174,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               inputField(
                                 onChanged: (v) {},
                                 onSave: (value) {
-                                  setState(() {
-                                    _email = value;
-                                  });
+                                 email = value;
                                 },
                                 secure: false,
                                 validate: (value) {
@@ -190,9 +202,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               inputField(
                                 onChanged: (v) {},
                                 onSave: (value) {
-                                  setState(() {
-                                    _password=value;
-                                  });
+                                    password=value;
                                 },
                                 secure: _obscuredText,
                                 validate: (value) {
@@ -224,9 +234,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           height: 35,
                         ),
                         _signUpLoading
-                            ? Center(child: CircularProgressIndicator(backgroundColor: Color(0xFF273370),))
+                            ? Center(
+                            child: CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                  Color(0xFF273370)),
+                            ))
                             : defaultButton(
-                                function: () {
+                                function: () async{
                                   if (!_formKey.currentState.validate()) {
                                     print('unValidated');
                                     return;
@@ -236,22 +250,49 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     setState(() {
                                       _signUpLoading = true;
                                     });
-                                    SignUpController.signUp(
-                                            thirdName: _name,
-                                            email: _email,
-                                            pass: _password,
-                                            phone: _phone,
-                                            context: context)
-                                        .then((value) {
-                                      setState(() {
-                                        _signUpLoading = false;
-                                      });
+                                    await SignUpController.signUp(
+                                        thirdName: name,
+                                        email: email,
+                                        pass: password,
+                                        phone: phone,
+                                        context: context,
+                                    );
+                                    setState(() {
+                                      _signUpLoading = false;
                                     });
-                                    // print(_name);
-                                    // print(_email);
-                                    // print(_password);
-                                    // print(_phone);
-                                  }
+                                    // try{
+                                    //
+                                    //   await AlertsController.alerts(
+                                    //     pass: password,
+                                    //     userName: phone,
+                                    //     token: myToken,
+                                    //     context: context,
+                                    //   );
+                                    //   // Navigator.push(
+                                    //   //   context,
+                                    //   //   MaterialPageRoute(
+                                    //   //     builder: (_) => HomeScreen(),
+                                    //   //   ),
+                                    //   // );
+                                    // } on PlatformException catch(e){
+                                    //   setState(() {
+                                    //     _signUpLoading = false;
+                                    //   });
+                                    //   print(e.message);
+                                    //   Fluttertoast.showToast(
+                                    //     msg: e.message,
+                                    //     toastLength: Toast.LENGTH_SHORT,
+                                    //     gravity: ToastGravity.CENTER,
+                                    //     timeInSecForIosWeb: 1,
+                                    //     backgroundColor: Colors.black12,
+                                    //     textColor: Color(0xFF273370),
+                                    //     fontSize: 14.0,
+                                    //   );
+                                    //   // setState(() {
+                                    //   //   _signUpLoading = false;
+                                    //   // });
+                                    // }
+                                   }
                                 },
                                 color: Color(0xFFA6C437),
                                 text: 'sign up'.tr().toString(),

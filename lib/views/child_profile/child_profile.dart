@@ -38,13 +38,21 @@ class _ChildProfileScreenState extends State<ChildProfileScreen> {
     List<Widget> listScreen = [
       ImagesScreen(),
       ReportsScreen(),
-      MessagesScreen(),
+      MessagesScreen(
+        childId: widget.id,
+        onSend: getInfo,
+        model: _childDetailsModel,
+      ),
     ];
 
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-        body: _isLoading ? Text('Loading') : SingleChildScrollView(
+        body: _isLoading ? Center(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(
+                  Color(0xFF273370)),
+            )) : SingleChildScrollView(
           child: Column(
             children: [
               Stack(

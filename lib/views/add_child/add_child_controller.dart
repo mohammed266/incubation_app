@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:incubation_app/shared/shared_helper.dart';
 import '../home/home.dart';
 
 class AddChildController {
@@ -80,8 +81,8 @@ class AddChildController {
       context}) async {
     String url = "https://superheroesland.com/wp-json/siteapi/v1/children";
 
-    String username = '01021692754';
-    String password = 'sayed223';
+    String username = SharedHelper.phone;
+    String password = SharedHelper.password;
     String basicAuth =
         'Basic ' + base64Encode(utf8.encode('$username:$password'));
 
@@ -93,6 +94,7 @@ class AddChildController {
 
     var request = http.MultipartRequest('POST', Uri.parse(url));
     var headers = {
+      'authorization': basicAuth,
       'Authorization': 'Basic MDEwMjE2OTI2NTQ6c2F5ZWQxMjM=',
       'User-Agent': 'PostmanRuntime/7.26.8',
       'Accept': '*/*',

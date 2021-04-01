@@ -284,13 +284,13 @@ class ChildDetailsModel {
 
 class ChildrenStatus {
   String label;
-  List value;
+  String value;
 
   ChildrenStatus({this.label, this.value});
 
   ChildrenStatus.fromJson(Map<String, dynamic> json) {
     label = json['label'];
-    value = json['value'];
+    value = json['value'] == null ? '0' : '1';
   }
 
   Map<String, dynamic> toJson() {

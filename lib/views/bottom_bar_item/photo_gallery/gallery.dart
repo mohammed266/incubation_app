@@ -76,7 +76,14 @@ class _GalleryScreenState extends State<GalleryScreen> {
               ),
               Padding(
                 padding: EdgeInsets.all(20),
-                child: controller.loading ? Text("loading") : GridView.builder(
+                child: controller.loading
+                    ? Center(
+                      child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                        Color(0xFF273370)),
+                ),
+                    )
+                    : GridView.builder(
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
                   itemCount: controller.galleryModel.length,

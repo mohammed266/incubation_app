@@ -1,16 +1,18 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'center_department_model.dart';
+import 'search_model.dart';
 
 
-class CenterDepartmentController {
-  List<CenterDepartmentModel> listOfCenterDep = [];
+
+
+class SearchController {
+  List<SearchModel> listOfSearch = [];
   bool loading = true;
-  Future getCenterDepartment() async {
-    String url = "https://superheroesland.com/wp-json/wp/v2/centers?page=1&per_page=22";
+  Future getSearch({List filter, String search}) async {
+
+    String url = "https://superheroesland.com/wp-json/wp/v2/search?search=$search";
 
     http.Response response = await http.get(url, headers: {
-      'Cookie': 'PHPSESSID=dd3667b54c7e3d25c556cbaffd745863',
       'User-Agent': 'PostmanRuntime/7.26.10',
       'Accept': '*/*',
       'Accept-Encoding': 'gzip, deflate, br',
@@ -19,10 +21,10 @@ class CenterDepartmentController {
     var responseDecoded = json.decode(response.body);
     if (response.statusCode == 200) {
       print(response.body);
-      for (var classes in responseDecoded) {
-        listOfCenterDep.add(CenterDepartmentModel.fromJson(classes));
+      for (var item in responseDecoded) {
+        listOfSearch.add(SearchModel.fromJson(item));
       }
-      print("good");
+      print("good yas66a");
     } else {
       print(response.body);
       print("Error");

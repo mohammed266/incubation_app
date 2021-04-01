@@ -14,6 +14,7 @@ class ConnectUsController {
     String url = "https://superheroesland.com/wp-json/siteapi/v1/page/contact";
 
     http.Response response = await http.get(url, headers: {
+      'Cookie': 'PHPSESSID=dd3667b54c7e3d25c556cbaffd745863',
       'User-Agent': 'PostmanRuntime/7.26.10',
       'Accept': '*/*',
       'Accept-Encoding': 'gzip, deflate, br',
@@ -51,6 +52,7 @@ class ConnectUsController {
   Future sentContact({name,email,ddl,message}) async{
     String url = "https://superheroesland.com/wp-json/contact-form-7/v1/contact-forms/460/feedback";
     Map<String,String> headers = {
+      'Cookie': 'PHPSESSID=dd3667b54c7e3d25c556cbaffd745863',
       'User-Agent': 'PostmanRuntime/7.26.10',
       'Accept': '*/*',
       'Accept-Encoding': 'gzip, deflate, br',

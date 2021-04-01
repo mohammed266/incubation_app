@@ -87,7 +87,8 @@ class DaycareScreen extends StatelessWidget {
                 children: [
                   Padding(
                     padding: EdgeInsets.only(bottom: 10),
-                    child: HtmlWidget(classDetails.content),
+                    child: Text('${classDetails.content}',style: TextStyle(fontSize: 12,color: Color(0xFF273370)),),
+                    // HtmlWidget(classDetails.content),
                   ),
                   // Padding(
                   //   padding: EdgeInsets.only(bottom: 30),
@@ -96,7 +97,7 @@ class DaycareScreen extends StatelessWidget {
                   //   ),
                   // ),
                   // Text('١ - تطوير المهارات اللغوية  Language development',
-                  //   style: TextStyle(fontSize: 12,color: Color(0xFF273370)),
+                  //   style: TextStyle(fontSize: 12,color: Color()),
                   // ),
                   // Text('٢ - الوظائف التنفيذية Executive Function',
                   //   style: TextStyle(fontSize: 12,color: Color(0xFF273370)),

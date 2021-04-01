@@ -1,9 +1,11 @@
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:incubation_app/views/book_service/models/services.dart';
 import 'book_sevice_controller.dart';
 import '../../shared/components/components.dart';
 import '../add_child/add_child.dart';
+import 'models/children.dart';
 
 class BookServiceScreen extends StatefulWidget {
   @override
@@ -11,101 +13,28 @@ class BookServiceScreen extends StatefulWidget {
 }
 
 class _BookServiceScreenState extends State<BookServiceScreen> {
-  List<String> serviceName = ['A', 'B', 'C', 'D'];
-  // List<String> childList = ['A', 'B', 'C', 'D'];
+  BookServiceController _controller = BookServiceController();
+  List<ChildrenModel> _childrenModel;
+  List<ServicesModel> _servicesModel;
 
-  String _newValue;
-  String _newValue1;
+  ChildrenModel child;
+  ServicesModel service;
 
-  Future<void> _showDialog() async {
-    return showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Column(
-          children: [
-            SizedBox(height: MediaQuery.of(context).size.height * .2),
-            Stack(
-              children: [
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.6,
-                  width: MediaQuery.of(context).size.width,
-                ),
-                Positioned(
-                  bottom: 0,
-                  child: Container(
-                    height: MediaQuery.of(context).size.height * 0.5,
-                    width: MediaQuery.of(context).size.width,
-                    child: Dialog(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(44),
-                      ),
-                      insetPadding: EdgeInsets.only(
-                        right: 25,
-                        left: 25,
-                      ),
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height/ 7,
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 10),
-                            child: Text(
-                              'dialog text'.tr().toString(),
-                              style: TextStyle(
-                                fontSize: EasyLocalization.of(context).locale ==  Locale('en', 'US')
-                                 ? 15 : 17,
-                                color: Color(0xFF707070),
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          Spacer(),
-                          InkWell(
-                            onTap: () {
-                              print('ooo');
-                            },
-                            child: Container(
-                              height: 70,
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.only(
-                                  bottomRight: Radius.circular(44),
-                                  bottomLeft: Radius.circular(44),
-                                ),
-                                color: Color(0xFFA6C437),
-                              ),
-                              child: Center(
-                                  child: Text(
-                                    'dialog button'.tr().toString(),
-                                    style:
-                                    TextStyle(fontSize: 15, color: Colors.white,fontWeight: FontWeight.w500),
-                                  )),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.topCenter,
-                  child: Container(
-                    height: 100,
-                    width: 100,
-                    decoration: BoxDecoration(
-                      color: Color(0xFFF7941D),
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    child: Icon(Icons.check,color: Colors.white,size: 60,),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        );
-      },
-    );
+  bool _pageIsLoading = true;
+  bool _buttonIsLoading = false;
+
+  @override
+  void initState() {
+    getData();
+    super.initState();
+  }
+
+  void getData()async{
+    _childrenModel = await _controller.getChildren();
+    _servicesModel = await _controller.getServices();
+    setState(() {
+      _pageIsLoading = false;
+    });
   }
 
   @override
@@ -113,7 +42,8 @@ class _BookServiceScreenState extends State<BookServiceScreen> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-        body: Column(
+        body: _pageIsLoading ? Center(child: CircularProgressIndicator(),) :
+        Column(
           children: [
             Container(
               padding: EdgeInsets.only(
@@ -173,20 +103,20 @@ class _BookServiceScreenState extends State<BookServiceScreen> {
                         color: Color(0xFFECEFFF),
                       ),
                     ),
-                    child: DropdownButton<String>(
+                    child: DropdownButton(
                       underline: Text(''),
-                      items: serviceName.map((String value) {
-                        return new DropdownMenuItem<String>(
+                      items: _servicesModel.map((ServicesModel value) {
+                        return new DropdownMenuItem(
                           value: value,
-                          child: new Text(value),
+                          child: new Text(value.title),
                         );
                       }).toList(),
                       onChanged: (newValue) {
                         setState(() {
-                          _newValue = newValue;
+                          service = newValue;
                         });
                       },
-                      value: _newValue,
+                      value: service,
                       isExpanded: true,
                       elevation: 0,
                       hint: Text(
@@ -278,7 +208,7 @@ class _BookServiceScreenState extends State<BookServiceScreen> {
                     ), */
                     child: DropdownButton(
                       underline: SizedBox(),
-                      value: _newValue1,
+                      value: child,
                       isExpanded: true,
                       hint: Text(
                         'اسم الطفل',
@@ -288,15 +218,15 @@ class _BookServiceScreenState extends State<BookServiceScreen> {
                       onChanged: (value){
                           if(value != 'null'){
                             setState(() {
-                              _newValue1 = value;
+                              child = value;
                             });
                           }else{
                             Navigator.push(context, MaterialPageRoute(builder: (_)=> AddChildScreen()),);
                           }
                       },
                       items: [
-                        ...fakeData.map((e) => DropdownMenuItem(
-                          child: Text(e.toString()),
+                        ..._childrenModel.map((ChildrenModel e) => DropdownMenuItem(
+                          child: Text(e.name),
                           value: e,
                         ),).toList(),
                         DropdownMenuItem(
@@ -317,13 +247,18 @@ class _BookServiceScreenState extends State<BookServiceScreen> {
                   SizedBox(
                     height: 50,
                   ),
-                  defaultButton(
+                  _buttonIsLoading ? Center(child: CircularProgressIndicator(),) : defaultButton(
                     text: 'book service1'.tr().toString(),
                     color: Color(0xFFA6C437),
-                    function: (){
-                      
-                      BookServiceController.sendBookService('12');
+                    function: ()async{
+                      setState(() {
+                        _buttonIsLoading = true;
+                      });
+                     await _controller.sendBookService(childId: child.id,serviceId: service.id);
                       // _showDialog();
+                      setState(() {
+                        _buttonIsLoading = false;
+                      });
                     }
                   ),
                 ],
@@ -345,6 +280,97 @@ class _BookServiceScreenState extends State<BookServiceScreen> {
     );
   }
 }
- List fakeData = [
-   '1','2','3'
- ];
+
+
+/*
+Future<void> _showDialog() async {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Column(
+          children: [
+            SizedBox(height: MediaQuery.of(context).size.height * .2),
+            Stack(
+              children: [
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.6,
+                  width: MediaQuery.of(context).size.width,
+                ),
+                Positioned(
+                  bottom: 0,
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * 0.5,
+                    width: MediaQuery.of(context).size.width,
+                    child: Dialog(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(44),
+                      ),
+                      insetPadding: EdgeInsets.only(
+                        right: 25,
+                        left: 25,
+                      ),
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height/ 7,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            child: Text(
+                              'dialog text'.tr().toString(),
+                              style: TextStyle(
+                                fontSize: EasyLocalization.of(context).locale ==  Locale('en', 'US')
+                                 ? 15 : 17,
+                                color: Color(0xFF707070),
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          Spacer(),
+                          InkWell(
+                            onTap: () {
+                              print('ooo');
+                            },
+                            child: Container(
+                              height: 70,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                  bottomRight: Radius.circular(44),
+                                  bottomLeft: Radius.circular(44),
+                                ),
+                                color: Color(0xFFA6C437),
+                              ),
+                              child: Center(
+                                  child: Text(
+                                    'dialog button'.tr().toString(),
+                                    style:
+                                    TextStyle(fontSize: 15, color: Colors.white,fontWeight: FontWeight.w500),
+                                  )),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: Container(
+                    height: 100,
+                    width: 100,
+                    decoration: BoxDecoration(
+                      color: Color(0xFFF7941D),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    child: Icon(Icons.check,color: Colors.white,size: 60,),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+ */

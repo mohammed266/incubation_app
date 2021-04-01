@@ -11,6 +11,7 @@ class CenterClassesController {
     String url = "https://superheroesland.com/wp-json/wp/v2/classes?page=1&per_page=22";
 
     http.Response response = await http.get(url, headers: {
+      'Cookie': 'PHPSESSID=dd3667b54c7e3d25c556cbaffd745863',
       'User-Agent': 'PostmanRuntime/7.26.8',
       'Accept': '*/*',
       'Accept-Encoding': 'gzip, deflate, br',

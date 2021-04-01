@@ -231,7 +231,11 @@ class _EditGuardianProfileScreenState extends State<EditGuardianProfileScreen> {
                         height: 40,
                       ),
                       controller.loading
-                          ? Text("loading")
+                          ? Center(
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                Color(0xFF273370)),
+                          ))
                           : defaultButton(
                               color: Color(0xFFA6C437),
                               text: 'حفظ',

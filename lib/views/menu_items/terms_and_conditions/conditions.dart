@@ -73,43 +73,51 @@ class _TermsAndConditionsScreenState extends State<TermsAndConditionsScreen> {
                 padding: EdgeInsets.only(left: 20, right: 20, top: 30),
                 child: Column(
                   children: [
-                    controller.loading ? Text("loading") : ListView.builder(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: controller.listOfTerms.length,
-                      itemBuilder: (context, index) => Container(
-                        width: double.infinity,
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Image.asset(
-                                  'assets/icons/icon18.png',
-                                  height: 35,
-                                  width: 35,
-                                ),
-                                SizedBox(
-                                  width: 8,
-                                ),
-                                Text(
-                                  '${controller.listOfTerms[index].title}',
-                                  style: TextStyle(
-                                      fontSize: 14, color: Color(0xFF273370)),
-                                ),
-                              ],
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(top: 15, bottom: 30),
-                              child: Text(
-                                '${controller.listOfTerms[index].desc}',
-                                style: TextStyle(
-                                    fontSize: 12, color: Color(0xFFAAAAAA)),
+                    controller.loading
+                        ? CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                            Color(0xFF273370)),
+                          )
+                        : ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: controller.listOfTerms.length,
+                            itemBuilder: (context, index) => Container(
+                              width: double.infinity,
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Image.asset(
+                                        'assets/icons/icon18.png',
+                                        height: 35,
+                                        width: 35,
+                                      ),
+                                      SizedBox(
+                                        width: 8,
+                                      ),
+                                      Text(
+                                        '${controller.listOfTerms[index].title}',
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            color: Color(0xFF273370)),
+                                      ),
+                                    ],
+                                  ),
+                                  Padding(
+                                    padding:
+                                        EdgeInsets.only(top: 15, bottom: 30),
+                                    child: Text(
+                                      '${controller.listOfTerms[index].desc}',
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          color: Color(0xFFAAAAAA)),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
+                          ),
                   ],
                 ),
               ),

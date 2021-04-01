@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:incubation_app/shared/shared_helper.dart';
+import 'package:incubation_app/views/alt/view.dart';
 import 'guardian_controller.dart';
 import '../../child_profile/child_profile.dart';
 import '../../add_child/add_child.dart';
@@ -31,7 +33,7 @@ class _GuardianScreenState extends State<GuardianScreen> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-        body: SingleChildScrollView(
+        body: !SharedHelper.isLogged ? AltView() : SingleChildScrollView(
           child: Column(
             children: [
               Stack(
@@ -257,8 +259,7 @@ class _GuardianScreenState extends State<GuardianScreen> {
                                   Spacer(
                                     flex: 1,
                                   ),
-                                  Text(
-                                    '${controller.listOfChild[i].status}',
+                                  Text(controller.listOfChild[i].status == 0 ? controller.listOfChild[i].status.toString() : controller.listOfChild[i].status['value'] ,
                                     style: TextStyle(
                                         color: Color(0xFFA6C437), fontSize: 10),
                                   ),

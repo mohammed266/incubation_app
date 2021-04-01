@@ -18,7 +18,7 @@ class GuardianModel {
 
   int id;
   String name;
-  int status;
+  var status;
   String img;
 
   factory GuardianModel.fromJson(Map<String, dynamic> json) => GuardianModel(

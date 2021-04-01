@@ -3,7 +3,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:incubation_app/views/daycare/daycare.dart';
 import 'center_classes_controller.dart';
 
-
 class CenterClassesScreen extends StatefulWidget {
   @override
   _CenterClassesScreenState createState() => _CenterClassesScreenState();
@@ -16,7 +15,7 @@ class _CenterClassesScreenState extends State<CenterClassesScreen> {
   void initState() {
     controller.getCenterClasses().then((value) {
       setState(() {
-        controller.loading=false;
+        controller.loading = false;
       });
     });
     super.initState();
@@ -73,11 +72,18 @@ class _CenterClassesScreenState extends State<CenterClassesScreen> {
               SizedBox(
                 height: 20,
               ),
-              controller.loading ? Text("loading") : ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: controller.listOfClasses.length,
-                  itemBuilder: (context, index) => CenterClasses(
+              controller.loading
+                  ? Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                      Color(0xFF273370)),
+                ),
+              )
+                  : ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: controller.listOfClasses.length,
+                      itemBuilder: (context, index) => CenterClasses(
                         image: '${controller.listOfClasses[index].img}',
                         title: '${controller.listOfClasses[index].name}',
                         details: '${controller.listOfClasses[index].shortDesc}',
@@ -85,12 +91,13 @@ class _CenterClassesScreenState extends State<CenterClassesScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => DaycareScreen(controller.listOfClasses[index]),
+                              builder: (_) => DaycareScreen(
+                                  controller.listOfClasses[index]),
                             ),
                           );
                         },
                       ),
-              ),
+                    ),
             ],
           ),
         ),
@@ -121,6 +128,7 @@ class CenterClasses extends StatelessWidget {
           margin: EdgeInsets.only(bottom: 12),
           height: MediaQuery.of(context).size.height * 0.3,
           decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
             image: DecorationImage(
               image: NetworkImage(image),
               fit: BoxFit.fill,

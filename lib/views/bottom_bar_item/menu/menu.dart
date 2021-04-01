@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:incubation_app/views/bottom_bar_item/menu/menu_controller.dart';
-import '../../choose_lang/choose_lang.dart';
+import 'package:incubation_app/shared/shared_helper.dart';
+import 'menu_controller.dart';
 import '../../../shared/components/components.dart';
+import '../../choose_lang/choose_lang.dart';
 import '../../menu_items/lang_dialog/change_lang_dialog.dart';
 import '../../menu_items/terms_and_conditions/conditions.dart';
 import '../../menu_items/center_classes/center_classes.dart';
@@ -18,18 +19,21 @@ class MenuScreen extends StatefulWidget {
 }
 
 class _MenuScreenState extends State<MenuScreen> {
+  _MenuScreenState();
+
   Future<void> _showDialog() async {
     final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-    String _password;
+    String password;
+    String newPassword;
     bool _obscuredText = true;
+    bool _obscuredText1 = true;
+
     _toggle() {
       setState(() {
         _obscuredText = !_obscuredText;
       });
     }
 
-    String _newPassword;
-    bool _obscuredText1 = true;
     _toggle1() {
       setState(() {
         _obscuredText1 = !_obscuredText1;
@@ -63,7 +67,7 @@ class _MenuScreenState extends State<MenuScreen> {
                             height: MediaQuery.of(context).size.height / 15,
                           ),
                           Padding(
-                            padding: EdgeInsets.only(left: 10, right: 10),
+                            padding: EdgeInsets.only(left: 10, right: 10,bottom: 8),
                             child: Text(
                               'الرقم السرى القديم',
                               style: TextStyle(
@@ -80,7 +84,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                   child: inputField(
                                     onChanged: (v) {},
                                     onSave: (value) {
-                                        _password = value;
+                                        password = value;
                                     },
                                     secure: _obscuredText,
                                     validate: (value) {
@@ -111,7 +115,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                   height: 10,
                                 ),
                                 Padding(
-                                  padding: EdgeInsets.only(left: 10, right: 10),
+                                  padding: EdgeInsets.only(left: 10, right: 10,bottom: 8),
                                   child: Text(
                                     'الرقم السرى الجديد',
                                     style: TextStyle(
@@ -123,7 +127,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                   child: inputField(
                                     onChanged: (v) {},
                                     onSave: (value) {
-                                        _newPassword = value;
+                                        newPassword = value;
                                     },
                                     secure: _obscuredText1,
                                     validate: (value) {
@@ -160,14 +164,14 @@ class _MenuScreenState extends State<MenuScreen> {
                                 print('unValidated');
                                 return;
                               } else {
-                                ChangePassController.login(
-                                  context: context,
-                                  pass: _password,
-                                  newPass: _newPassword,
-                                );
                                 _formKey.currentState.save();
-                                print(_password);
-                                print(_newPassword);
+                                ChangePassController.newPass(
+                                  context: context,
+                                  pass: password,
+                                  newPass: newPassword,
+                                );
+                                // print(password);
+                                // print(newPassword);
                                 Navigator.pop(context);
                               }
                             },
@@ -308,8 +312,10 @@ class _MenuScreenState extends State<MenuScreen> {
                   );
                 },
               ),
-              buildPadding(),
-              MenuListTile(
+              if(SharedHelper.isLogged)
+                buildPadding(),
+              if(SharedHelper.isLogged)
+                MenuListTile(
                 image: 'assets/icons/icon12.png',
                 title: 'change password'.tr().toString(),
                 onTap: () {
@@ -351,14 +357,16 @@ class _MenuScreenState extends State<MenuScreen> {
                 },
               ),
               buildPadding(),
+              if(SharedHelper.isLogged)
               MenuListTile(
                 image: 'assets/icons/icon16.png',
                 title: 'sign out'.tr().toString(),
                 onTap: () {
+                  SharedHelper.signOut();
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => ChooseLangScreen(),
+                      builder: (_) =>  ChooseLangScreen(),
                     ),
                   );
                 },

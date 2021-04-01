@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:incubation_app/views/book_service/book_service.dart';
 import 'who_are_we_controller.dart';
 import '../../../shared/components/components.dart';
 
@@ -80,7 +81,7 @@ class _WhoAreWeScreenState extends State<WhoAreWeScreen> {
                 height: 30,
               ),
               //
-              /*GestureDetector(
+              /* GestureDetector(
                 onTap: () {
                   // controller.jumpTo(isActive =1);
                   setState(() {
@@ -408,122 +409,166 @@ class _WhoAreWeScreenState extends State<WhoAreWeScreen> {
                 ), */
               //
               controller.loading
-                  ? Text("loading")
+                  ? Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                      Color(0xFF273370)),
+                ),
+              )
                   : ListView.builder(
                       physics: NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       itemCount: controller.listOfWhoAreWe.length,
-                      itemBuilder: (context, index) => Container(
-                        child: Column(
+                      itemBuilder: (_, index) => Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        child: ExpansionTile(
+                          title: Text(
+                            '${controller.listOfWhoAreWe[index].title}',
+                            // 'day care department'.tr().toString(),
+                            style: TextStyle(
+                              fontSize: 12,
+                            ),
+                          ),
                           children: [
-                            GestureDetector(
-                              onTap: () {
-                                // if(_selectedItems.contains(index)){
-                                //   setState(()  {
-                                //     // audioSelectedList[index] = true;
-                                //     //   _isActive = 1;
-                                //     // } else {
-                                //     //   _isActive = 2;
-                                //     // }
-                                //
-                                //     createVariables();
-                                //     _selectedItems[index] = true;
-                                //
-                                //
-                                //   });
-                                // }
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                  left: 20,
-                                  right: 20,
-                                ),
-                                child: Container(
-                                  padding: EdgeInsets.only(
-                                    left: 20,
-                                    right: 20,
+                            Container(
+                              height: 150,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(25),
+                                image: DecorationImage(
+                                  image: NetworkImage(
+                                    '${controller.listOfWhoAreWe[index].img}',
                                   ),
-                                  width: double.infinity,
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                    color: Color(0xFFFCFCFC),
-                                    borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(
-                                      color: _selectedItems.contains(index)
-                                          ? Color(0xFFF7941D)
-                                          : Color(0xFFFCFCFC),
-                                    ),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        '${controller.listOfWhoAreWe[index].title}',
-                                        // 'day care department'.tr().toString(),
-                                        style: TextStyle(
-                                          fontSize: 10,
-                                          color: _selectedItems.contains(index)
-                                              ? Color(0xFFF7941D)
-                                              : Color(0xFFAAAAAA),
-                                        ),
-                                      ),
-                                      Spacer(),
-                                      Icon(
-                                        _selectedItems.contains(index)
-                                            ? Icons.keyboard_arrow_up_rounded
-                                            : Icons.keyboard_arrow_down_rounded,
-                                        color: _selectedItems.contains(index)
-                                            ? Color(0xFFF7941D)
-                                            : Color(0xFFAAAAAA),
-                                      ),
-                                    ],
-                                  ),
+                                  fit: BoxFit.fill,
                                 ),
                               ),
                             ),
                             SizedBox(
-                              height: 20,
+                              height: 10,
                             ),
-                            if (_selectedItems.contains(index))
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    left: 20, right: 20, bottom: 20),
-                                child: Container(
-                                  // height: 50,
-                                  width: double.infinity,
-                                  // color: Colors.red,
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        height: 150,
-                                        width: double.infinity,
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(25),
-                                          image: DecorationImage(
-                                            image: NetworkImage(
-                                              '${controller.listOfWhoAreWe[index].img}',
-                                            ),
-                                            fit: BoxFit.fill,
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Text(
-                                        '${controller.listOfWhoAreWe[index].content}',
-                                        style: TextStyle(fontSize: 12),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
+                            Text(
+                              '${controller.listOfWhoAreWe[index].content}',
+                              style: TextStyle(fontSize: 12),
+                            ),
                           ],
                         ),
                       ),
                     ),
+              // controller.loading
+              //     ? Text("loading")
+              //     : ListView.builder(
+              //         physics: NeverScrollableScrollPhysics(),
+              //         shrinkWrap: true,
+              //         itemCount: controller.listOfWhoAreWe.length,
+              //         itemBuilder: (context, index) => Container(
+              //           child: Column(
+              //             children: [
+              //               GestureDetector(
+              //                 onTap: () {
+              //                   if (_selectedItems.contains(index)) {
+              //                     setState(() {
+              //                       // audioSelectedList[index] = true;
+              //                       //   _isActive = 1;
+              //                       // } else {
+              //                       //   _isActive = 2;
+              //                       // }
+              //
+              //                       // createVariables();
+              //                       _selectedItems[index] = true;
+              //                     });
+              //                   }
+              //                 },
+              //                 child: Padding(
+              //                   padding: EdgeInsets.only(
+              //                     left: 20,
+              //                     right: 20,
+              //                   ),
+              //                   child: Container(
+              //                     padding: EdgeInsets.only(
+              //                       left: 20,
+              //                       right: 20,
+              //                     ),
+              //                     width: double.infinity,
+              //                     height: 50,
+              //                     decoration: BoxDecoration(
+              //                       color: Color(0xFFFCFCFC),
+              //                       borderRadius: BorderRadius.circular(10),
+              //                       border: Border.all(
+              //                         color: _selectedItems.contains(index)
+              //                             ? Color(0xFFF7941D)
+              //                             : Color(0xFFFCFCFC),
+              //                       ),
+              //                     ),
+              //                     child: Row(
+              //                       children: [
+              //                         Text(
+              //                           '${controller.listOfWhoAreWe[index].title}',
+              //                           // 'day care department'.tr().toString(),
+              //                           style: TextStyle(
+              //                             fontSize: 10,
+              //                             color: _selectedItems.contains(index)
+              //                                 ? Color(0xFFF7941D)
+              //                                 : Color(0xFFAAAAAA),
+              //                           ),
+              //                         ),
+              //                         Spacer(),
+              //                         Icon(
+              //                           _selectedItems.contains(index)
+              //                               ? Icons.keyboard_arrow_up_rounded
+              //                               : Icons.keyboard_arrow_down_rounded,
+              //                           color: _selectedItems.contains(index)
+              //                               ? Color(0xFFF7941D)
+              //                               : Color(0xFFAAAAAA),
+              //                         ),
+              //                       ],
+              //                     ),
+              //                   ),
+              //                 ),
+              //               ),
+              //               SizedBox(
+              //                 height: 20,
+              //               ),
+              //               if (_selectedItems.contains(index))
+              //                 Padding(
+              //                   padding: EdgeInsets.only(
+              //                       left: 20, right: 20, bottom: 20),
+              //                   child: Container(
+              //                     // height: 50,
+              //                     width: double.infinity,
+              //                     // color: Colors.red,
+              //                     child: Column(
+              //                       children: [
+              //                         Container(
+              //                           height: 150,
+              //                           width: double.infinity,
+              //                           decoration: BoxDecoration(
+              //                             borderRadius:
+              //                                 BorderRadius.circular(25),
+              //                             image: DecorationImage(
+              //                               image: NetworkImage(
+              //                                 '${controller.listOfWhoAreWe[index].img}',
+              //                               ),
+              //                               fit: BoxFit.fill,
+              //                             ),
+              //                           ),
+              //                         ),
+              //                         SizedBox(
+              //                           height: 10,
+              //                         ),
+              //                         Text(
+              //                           '${controller.listOfWhoAreWe[index].content}',
+              //                           style: TextStyle(fontSize: 12),
+              //                         ),
+              //                       ],
+              //                     ),
+              //                   ),
+              //                 ),
+              //             ],
+              //           ),
+              //         ),
+              //       ),
               Padding(
-                padding: EdgeInsets.only(left: 20, right: 20, bottom: 20),
+                padding: EdgeInsets.all(20),
                 child: Container(
                   padding: EdgeInsets.all(20),
                   width: double.infinity,
@@ -565,7 +610,12 @@ class _WhoAreWeScreenState extends State<WhoAreWeScreen> {
                         color: Color(0xFFA6C437),
                         text: 'book now'.tr().toString(),
                         function: () {
-                          //
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => BookServiceScreen(),
+                            ),
+                          );
                         },
                       ),
                     ],

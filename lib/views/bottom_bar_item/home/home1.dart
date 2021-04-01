@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:incubation_app/shared/shared_helper.dart';
 import 'package:incubation_app/views/bottom_bar_item/home/home_controller.dart';
+import 'package:incubation_app/views/search/search_controller.dart';
 import '../../alerts/alerts.dart';
 import '../../book_service/book_service.dart';
 import '../../daycare/daycare.dart';
@@ -15,6 +17,7 @@ class Home1Screen extends StatefulWidget {
 
 class _Home1ScreenState extends State<Home1Screen> {
   HomeController controller = HomeController();
+  SearchController _searchController = SearchController();
   int currentIndex = 0;
   int index1 = 0;
   int index2 = 1;
@@ -22,8 +25,17 @@ class _Home1ScreenState extends State<Home1Screen> {
 
   @override
   void initState() {
-    controller.getSliderData();
-    controller.getService();
+    _searchController.getSearch().then((value) {});
+    controller.getSliderData().then((value) {
+      setState(() {
+        controller.loading = false;
+      });
+    });
+    controller.getService().then((value) {
+      setState(() {
+        controller.loading = false;
+      });
+    });
     super.initState();
   }
 
@@ -76,12 +88,12 @@ class _Home1ScreenState extends State<Home1Screen> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => SearchScreen(),
-                              ),
-                            );
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (_) => SearchScreen(),
+                            //   ),
+                            // );
                           },
                           child: Icon(
                             Icons.search,
@@ -97,42 +109,47 @@ class _Home1ScreenState extends State<Home1Screen> {
                     right: 0,
                     child: Column(
                       children: [
-                        Container(
-                          height: 170,
-                          width: double.infinity,
-                          child: CarouselSlider(
-                            items: controller.sliderUrl
-                                .map((e) => Container(
-                                      decoration: BoxDecoration(
-                                          color: Colors.transparent,
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                          image: DecorationImage(
-                                              image: NetworkImage(e),
-                                              fit: BoxFit.fill)),
-                                    ))
-                                .toList(),
-                            options: CarouselOptions(
-                                aspectRatio: 2 / 2,
-                                autoPlay: true,
-                                scrollDirection: Axis.horizontal,
-                                autoPlayInterval: Duration(seconds: 3),
-                                autoPlayAnimationDuration:
-                                    Duration(milliseconds: 800),
-                                autoPlayCurve: Curves.fastOutSlowIn,
-                                enlargeCenterPage: true,
-                                initialPage: 0,
-                                enableInfiniteScroll: true,
-                                reverse: false,
-                                onPageChanged: (index1, T) {
-                                  setState(() {
-                                    currentIndex = index1;
-                                  });
-                                }
-                                // onPageChanged: callbackFunction,
+                        controller.loading
+                            ? CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    Color(0xFF273370)),
+                              )
+                            : Container(
+                                height: 170,
+                                width: double.infinity,
+                                child: CarouselSlider(
+                                  items: controller.sliderUrl
+                                      .map((e) => Container(
+                                            decoration: BoxDecoration(
+                                                color: Colors.transparent,
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                                image: DecorationImage(
+                                                    image: NetworkImage(e),
+                                                    fit: BoxFit.fill)),
+                                          ))
+                                      .toList(),
+                                  options: CarouselOptions(
+                                      aspectRatio: 2 / 2,
+                                      autoPlay: true,
+                                      scrollDirection: Axis.horizontal,
+                                      autoPlayInterval: Duration(seconds: 3),
+                                      autoPlayAnimationDuration:
+                                          Duration(milliseconds: 800),
+                                      autoPlayCurve: Curves.fastOutSlowIn,
+                                      enlargeCenterPage: true,
+                                      initialPage: 0,
+                                      enableInfiniteScroll: true,
+                                      reverse: false,
+                                      onPageChanged: (index1, T) {
+                                        setState(() {
+                                          currentIndex = index1;
+                                        });
+                                      }
+                                      // onPageChanged: callbackFunction,
+                                      ),
                                 ),
-                          ),
-                        ),
+                              ),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -194,89 +211,103 @@ class _Home1ScreenState extends State<Home1Screen> {
               Container(
                 width: MediaQuery.of(context).size.width,
                 height: 160,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  shrinkWrap: true,
-                  itemCount: controller.listOfService.length,
-                  itemBuilder: (_,i) => Padding(
-                    padding: EdgeInsets.only(
-                      left: EasyLocalization.of(context).locale ==
-                              Locale('en', 'US')
-                          ? 0
-                          : 10,
-                      right: EasyLocalization.of(context).locale ==
-                              Locale('en', 'US')
-                          ? 10
-                          : 0,
-                    ),
-                    child: InkWell(
-                      onTap: () {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (_) => DaycareScreen(),
-                        //   ),
-                        // );
-                      },
-                      child: Container(
-                        width: MediaQuery.of(context).size.width * 0.8,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          image: DecorationImage(
-                            image: NetworkImage('${controller.listOfService[i].img}'),
-                          ),
-                        ),
-                        child: Center(
-                          child: Container(
-                            height: 90,
-                            width: MediaQuery.of(context).size.width * 0.6,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              color: Color(0xFF000000).withOpacity(0.5),
+                child: Center(
+                  child: controller.loading
+                      ? CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Color(0xFF273370)),
+                        )
+                      : ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          shrinkWrap: true,
+                          itemCount: controller.listOfService.length,
+                          itemBuilder: (_, i) => Padding(
+                            padding: EdgeInsets.only(
+                              left: EasyLocalization.of(context).locale ==
+                                      Locale('en', 'US')
+                                  ? 0
+                                  : 10,
+                              right: EasyLocalization.of(context).locale ==
+                                      Locale('en', 'US')
+                                  ? 10
+                                  : 0,
                             ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  '${controller.listOfService[i].title}',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 12,
+                            child: InkWell(
+                              onTap: () {
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //     builder: (_) => DaycareScreen(),
+                                //   ),
+                                // );
+                              },
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * 0.8,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  image: DecorationImage(
+                                    image: NetworkImage(
+                                        '${controller.listOfService[i].img}'),
                                   ),
                                 ),
-                                SizedBox(
-                                  height: 5,
-                                ),
-                                Container(
-                                  height: 1,
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.35,
-                                  color: Colors.white,
-                                ),
-                                SizedBox(
-                                  height: 5,
-                                ),
-                                Text(
-                                  '${controller.listOfService[i].shortDesc}',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 12,
+                                child: Center(
+                                  child: Container(
+                                    height: 90,
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.6,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15),
+                                      color: Color(0xFF000000).withOpacity(0.5),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          '${controller.listOfService[i].title}',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Container(
+                                          height: 1,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.35,
+                                          color: Colors.white,
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Text(
+                                          '${controller.listOfService[i].shortDesc}',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                  ),
                 ),
               ),
               SizedBox(
                 height: 20,
               ),
+              if(SharedHelper.isLogged)
               Padding(
                 padding: EdgeInsets.only(left: 20, right: 20),
                 child: defaultButton(

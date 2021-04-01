@@ -13,6 +13,7 @@ class HomeController {
         "https://superheroesland.com/wp-json/siteapi/v1/options/slider";
 
     http.Response response = await http.get(url, headers: {
+      'Cookie': 'PHPSESSID=dd3667b54c7e3d25c556cbaffd745863',
       'User-Agent': 'PostmanRuntime/7.26.8',
       'Accept': '*/*',
       'Accept-Encoding': 'gzip, deflate, br',
@@ -30,9 +31,10 @@ class HomeController {
   }
 
   Future getService() async {
-    String url = "https://superheroesland.com/wp-json/wp/v2/services?page=1&per_page=3";
+    String url = "https://superheroesland.com/wp-json/wp/v2/services?page=1&per_page=9";
 
     http.Response response = await http.get(url, headers: {
+      'Cookie': 'PHPSESSID=dd3667b54c7e3d25c556cbaffd745863',
       'User-Agent': 'PostmanRuntime/7.26.10',
       'Accept': '*/*',
       'Accept-Encoding': 'gzip, deflate, br',

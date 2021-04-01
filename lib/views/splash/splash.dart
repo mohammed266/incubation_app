@@ -1,6 +1,9 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:incubation_app/shared/shared_helper.dart';
 import 'package:incubation_app/views/choose_lang/choose_lang.dart';
+import 'package:incubation_app/views/home/home.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -8,6 +11,18 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  bool savedSession = false;
+
+  @override
+  void initState() {
+    Future.delayed(Duration.zero,()async{
+      savedSession =await SharedHelper.getSaveSession();
+      if(savedSession == null)
+        savedSession = false;
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -24,7 +39,7 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
         AnimatedSplashScreen(
           duration: 5000,
-          nextScreen: ChooseLangScreen(),
+          nextScreen: savedSession ? HomeScreen() : ChooseLangScreen(),
           splash: Center(
             child: Image.asset(
               'assets/icons/logo1.png',

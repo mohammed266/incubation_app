@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:incubation_app/shared/shared_helper.dart';
 import 'package:incubation_app/views/child_profile/models/child_details.dart';
 
 class ChildDetailsController {
@@ -10,8 +11,8 @@ class ChildDetailsController {
   Future<ChildDetailsModel> getDetails(int id)async{
 
     //TODO: change to username pass from sharedprefs
-    String username = '01021692654';
-    String password = 'sayed123';
+    String username = SharedHelper.phone;
+    String password = SharedHelper.password;
     String basicAuth =
         'Basic ' + base64Encode(utf8.encode('$username:$password'));
 
@@ -29,4 +30,7 @@ class ChildDetailsController {
     return _childDetailsModel;
   }
 
+  Future<void> sendMessage()async{
+
+  }
 }
