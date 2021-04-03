@@ -7,7 +7,7 @@ import '../menu_items/center_classes/center_classes_model.dart';
 
 
 class DaycareScreen extends StatelessWidget {
-  DaycareScreen(this.classDetails);
+  DaycareScreen({this.classDetails});
   CenterClassesModel classDetails;
   @override
   Widget build(BuildContext context) {

@@ -43,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Scaffold(
         backgroundColor: Colors.white,
         bottomNavigationBar: Container(
-          height: 90,
+          height: 100,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
               topRight: Radius.circular(25),
@@ -63,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
             items: [
               BottomNavigationBarItem(
                 icon: Padding(
-                  padding: EdgeInsets.only(top: 14),
+                  padding: EdgeInsets.only(top: 13),
                   child: Stack(
                     children: [
                       Container(
@@ -113,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               BottomNavigationBarItem(
                 icon: Padding(
-                  padding: EdgeInsets.only(top: 14),
+                  padding: EdgeInsets.only(top: 13),
                   child: Stack(
                     children: [
                       Container(
@@ -163,7 +163,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               BottomNavigationBarItem(
                 icon: Padding(
-                  padding: EdgeInsets.only(top: 14),
+                  padding: EdgeInsets.only(top: 13),
                   child: Stack(
                     children: [
                       Container(
@@ -213,7 +213,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               BottomNavigationBarItem(
                   icon: Padding(
-                    padding: EdgeInsets.only(top: 14),
+                    padding: EdgeInsets.only(top: 13),
                     child: Stack(
                       children: [
                         Container(

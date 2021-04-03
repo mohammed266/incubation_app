@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:incubation_app/views/child_profile/controllers/child_details.dart';
+import 'package:incubation_app/views/child_profile/models/chat.dart';
 import 'package:incubation_app/views/child_profile/models/child_details.dart';
 import '../edit_child_profile/edit_child_profile.dart';
 import 'components/messages.dart';
@@ -21,14 +22,15 @@ class _ChildProfileScreenState extends State<ChildProfileScreen> {
   int _currentIndex = 0;
   bool _isLoading = true;
   ChildDetailsModel _childDetailsModel;
-
+  ChatModel chatModel;
+  ChildDetailsController controller = ChildDetailsController();
   initState(){
     getInfo();
     super.initState();
   }
 
   getInfo()async{
-    _childDetailsModel = await ChildDetailsController().getDetails(widget.id);
+    _childDetailsModel = await controller.getDetails(widget.id);
     setState(()=> _isLoading = false);
   }
 
@@ -36,13 +38,9 @@ class _ChildProfileScreenState extends State<ChildProfileScreen> {
   Widget build(BuildContext context) {
 
     List<Widget> listScreen = [
-      ImagesScreen(),
+      ImagesScreen(widget.id),
       ReportsScreen(),
-      MessagesScreen(
-        childId: widget.id,
-        onSend: getInfo,
-        model: _childDetailsModel,
-      ),
+      MessagesScreen(childId: widget.id),
     ];
 
     return SafeArea(

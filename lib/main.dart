@@ -123,6 +123,7 @@ class _MyAppState extends State<MyApp> {
       supportedLocales: context.supportedLocales,
       locale: context.locale,
       theme: ThemeData(
+        fontFamily: 'Fairuz',
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: SplashScreen(),

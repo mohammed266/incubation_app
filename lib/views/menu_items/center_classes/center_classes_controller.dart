@@ -23,12 +23,6 @@ class CenterClassesController {
       for (var classes in responseDecoded) {
         listOfClasses.add(CenterClassesModel.fromJson(classes));
       }
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(
-      //     builder: (_) => HomeScreen(),
-      //   ),
-      // );
       print("good");
     } else {
       print(response.body);

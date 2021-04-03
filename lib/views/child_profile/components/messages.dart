@@ -1,26 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:incubation_app/shared/components/components.dart';
-import 'package:incubation_app/views/child_profile/models/child_details.dart';
+import 'package:incubation_app/views/child_profile/controllers/child_details.dart';
+import 'package:incubation_app/views/child_profile/models/chat.dart';
 
 class MessagesScreen extends StatefulWidget {
   final childId;
-  final Function onSend;
-  final ChildDetailsModel model;
-  MessagesScreen({this.childId,this.onSend, this.model});
+  MessagesScreen({this.childId});
 
   @override
   _MessagesScreenState createState() => _MessagesScreenState();
 }
 
 class _MessagesScreenState extends State<MessagesScreen> {
-  String message;
+  TextEditingController message = TextEditingController();
+  bool _isLoading = true;
+  bool _sendMessage = false;
+  ChatModel chatModel;
+  ChildDetailsController controller = ChildDetailsController();
+  getChat()async{
+    chatModel = await controller.getChat(widget.childId);
+    setState(() {
+      _isLoading = false;
+    });
+  }
+  @override
+  void initState() {
+    getChat();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return _isLoading ? Center(child: CircularProgressIndicator(),) : Column(
       children: [
         ListView.builder(
           shrinkWrap: true,
-          itemCount: 5,
+          itemCount: chatModel.value.length,
           physics: NeverScrollableScrollPhysics(),
           itemBuilder: (context, index) => Container(
             padding: EdgeInsets.all(8),
@@ -42,15 +56,15 @@ class _MessagesScreenState extends State<MessagesScreen> {
                     SizedBox(
                       width: 10,
                     ),
-                    Text('اسم المدرس او المدرسه ',style: TextStyle(fontSize: 12,color: Color(0xFF273370)),),
+                    Text(chatModel.value[index].sender,style: TextStyle(fontSize: 12,color: Color(0xFF273370)),),
                     Spacer(),
-                    Text('2/2/2021',style: TextStyle(fontSize: 10,color: Color(0xFFAAAAAA)),),
+                    Text(chatModel.value[index].time,style: TextStyle(fontSize: 10,color: Color(0xFFAAAAAA)),),
                   ],
                 ),
                 SizedBox(
                   height: 10,
                 ),
-                Text('هذا النص يمكن أن يتم تركيبه على أي تصميم دون مشكلة فلن يبدو وكأنه نص منسوخ، غير منظم، غير منسق، أو حتى غير مفهوم. لأنه مازال نصاً بديلاً ومؤقتاً.',
+                Text(chatModel.value[index].messge,
                   style: TextStyle(fontSize: 9,color: Color(0xFFAAAAAA)),),
               ],
             ),
@@ -60,16 +74,21 @@ class _MessagesScreenState extends State<MessagesScreen> {
           height: 10,
         ),
         inputField(
-          hint: 'اكتب رد',
+          hint: 'اكتب رد',controller: message,
           // onSave: (v){},
-          onChanged: (v){},
+          onChanged: (v)=> message = v,
           // validate: (v){},
           secure: false,
           icon: true,
           textInputType: TextInputType.text,
-          prefix: InkWell(
-              onTap: (){
-                widget.onSend();
+          prefix: _sendMessage ? null : InkWell(
+              onTap: ()async{
+                if(message == null || message.text.isEmpty) return;
+                setState(()=> _sendMessage = true);
+                await controller.sendMessage(widget.childId, message.text);
+                await getChat();
+                message.clear();
+                setState(()=> _sendMessage = false);
               },
               child: Padding(
                 padding: const EdgeInsets.all(8.0),

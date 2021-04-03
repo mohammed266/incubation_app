@@ -42,7 +42,10 @@ class _BookServiceScreenState extends State<BookServiceScreen> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-        body: _pageIsLoading ? Center(child: CircularProgressIndicator(),) :
+        body: _pageIsLoading ? Center(child:  CircularProgressIndicator(
+          valueColor:
+          AlwaysStoppedAnimation<Color>(Color(0xFF273370)),
+        )) :
         Column(
           children: [
             Container(
@@ -247,7 +250,10 @@ class _BookServiceScreenState extends State<BookServiceScreen> {
                   SizedBox(
                     height: 50,
                   ),
-                  _buttonIsLoading ? Center(child: CircularProgressIndicator(),) : defaultButton(
+                  _buttonIsLoading ? Center(child: CircularProgressIndicator(
+                    valueColor:
+                    AlwaysStoppedAnimation<Color>(Color(0xFF273370)),
+                  ),) : defaultButton(
                     text: 'book service1'.tr().toString(),
                     color: Color(0xFFA6C437),
                     function: ()async{

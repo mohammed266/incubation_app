@@ -2,23 +2,54 @@ import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:incubation_app/views/book_service/models/services.dart';
+import 'package:incubation_app/views/daycare/daycare.dart';
+import 'package:incubation_app/views/menu_items/center_classes/center_classes.dart';
+import 'package:incubation_app/views/menu_items/center_classes/center_classes_model.dart';
 import 'package:incubation_app/views/search/search_controller.dart';
 import 'package:incubation_app/views/search/search_model.dart';
 
-class SearchScreen extends StatelessWidget {
-  SearchController _controller = SearchController();
-  SearchModel _model = SearchModel();
+class SearchScreen extends StatefulWidget {
+  @override
+  _SearchScreenState createState() => _SearchScreenState();
+}
 
-  void search(String value)async{
-    _model = await _controller.getSearch(search: value);
+class _SearchScreenState extends State<SearchScreen> {
+  SearchController _controller = SearchController();
+  bool _isLoading = true;
+  List<CenterClassesModel> centerClassesModel;
+  List<CenterClassesModel> results;
+
+  void getServices()async{
+    centerClassesModel = await _controller.getCenterClasses();
+    setState((){
+      _isLoading = false;
+    });
   }
+
+  @override
+  void initState() {
+    getServices();
+    super.initState();
+  }
+
+  void search(String value){
+    results = [];
+    centerClassesModel.forEach((element) {
+      if(element.name.toLowerCase().contains(value.toLowerCase()))
+        setState(() {
+          results.add(element);
+        });
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-        body: SingleChildScrollView(
+        body: _isLoading ? Text('Loading') : SingleChildScrollView(
           child: Column(
             children: [
               Container(
@@ -102,135 +133,26 @@ class SearchScreen extends StatelessWidget {
                       SizedBox(
                         height: 20,
                       ),
-                      // Text(
-                      //   'ما الذى تبحث عنه ؟',
-                      //   style: TextStyle(
-                      //     fontSize: 14,
-                      //     color: Color(0xFF273370),
-                      //     fontWeight: FontWeight.bold,
-                      //   ),
-                      // ),
-                      // SizedBox(
-                      //   height: 20,
-                      // ),
-                      // Column(
-                      //   children: [
-                      //     Row(
-                      //       children: [
-                      //         Container(
-                      //           height: 40,
-                      //           width: MediaQuery.of(context).size.width * 0.35,
-                      //           decoration: BoxDecoration(
-                      //             border: Border.all(color: Color(0xFFAAAAAA)),
-                      //             borderRadius: BorderRadius.circular(10),
-                      //           ),
-                      //           child: Center(
-                      //               child: Text(
-                      //             'تواصل معنا',
-                      //             style: TextStyle(
-                      //                 fontSize: 10, color: Color(0xFFAAAAAA)),
-                      //           )),
-                      //         ),
-                      //         SizedBox(
-                      //           width: 10,
-                      //         ),
-                      //         Container(
-                      //           height: 40,
-                      //           width: MediaQuery.of(context).size.width * 0.35,
-                      //           decoration: BoxDecoration(
-                      //             border: Border.all(color: Color(0xFFAAAAAA)),
-                      //             borderRadius: BorderRadius.circular(10),
-                      //           ),
-                      //           child: Center(
-                      //               child: Text(
-                      //             'السياسة والانظمة',
-                      //             style: TextStyle(
-                      //                 fontSize: 10, color: Color(0xFFAAAAAA)),
-                      //           )),
-                      //         ),
-                      //       ],
-                      //     ),
-                      //     SizedBox(
-                      //       height: 10,
-                      //     ),
-                      //     Row(
-                      //       children: [
-                      //         Container(
-                      //           height: 40,
-                      //           width: MediaQuery.of(context).size.width * 0.4,
-                      //           decoration: BoxDecoration(
-                      //             border: Border.all(color: Color(0xFFAAAAAA)),
-                      //             borderRadius: BorderRadius.circular(10),
-                      //           ),
-                      //           child: Center(
-                      //               child: Text(
-                      //             'اقسام المركز',
-                      //             style: TextStyle(
-                      //                 fontSize: 12, color: Color(0xFFAAAAAA)),
-                      //           )),
-                      //         ),
-                      //         SizedBox(
-                      //           width: 10,
-                      //         ),
-                      //         Container(
-                      //           height: 40,
-                      //           width: MediaQuery.of(context).size.width * 0.3,
-                      //           decoration: BoxDecoration(
-                      //             border: Border.all(color: Color(0xFFAAAAAA)),
-                      //             borderRadius: BorderRadius.circular(10),
-                      //           ),
-                      //           child: Center(
-                      //             child: Text(
-                      //               'خدمات المركز',
-                      //               style: TextStyle(
-                      //                   fontSize: 10, color: Color(0xFFAAAAAA)),
-                      //             ),
-                      //           ),
-                      //         ),
-                      //       ],
-                      //     ),
-                      //     SizedBox(
-                      //       height: 10,
-                      //     ),
-                      //     Row(
-                      //       children: [
-                      //         Container(
-                      //           height: 40,
-                      //           width: MediaQuery.of(context).size.width * 0.3,
-                      //           decoration: BoxDecoration(
-                      //             border: Border.all(color: Color(0xFFAAAAAA)),
-                      //             borderRadius: BorderRadius.circular(10),
-                      //           ),
-                      //           child: Center(
-                      //             child: Text(
-                      //               'من نحن',
-                      //               style: TextStyle(
-                      //                   fontSize: 10, color: Color(0xFFAAAAAA)),
-                      //             ),
-                      //           ),
-                      //         ),
-                      //         SizedBox(
-                      //           width: 10,
-                      //         ),
-                      //         Container(
-                      //           height: 40,
-                      //           width: MediaQuery.of(context).size.width * 0.4,
-                      //           decoration: BoxDecoration(
-                      //             border: Border.all(color: Color(0xFFAAAAAA)),
-                      //             borderRadius: BorderRadius.circular(10),
-                      //           ),
-                      //           child: Center(
-                      //             child: Text(
-                      //               'حصص الفنون و الأنشطة',
-                      //               style: TextStyle(
-                      //                   fontSize: 10, color: Color(0xFFAAAAAA)),
-                      //             ),
-                      //           ),
-                      //         ),
-                      //       ],
-                      //     ),
-                      //   ],
-                      // ),
+                      results == null || results.isEmpty ? Text('No Result') : ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: results.length,
+                        itemBuilder: (context, index) => CenterClasses(
+                          image: results[index].img,
+                          title: results[index].name,
+                          details: results[index].shortDesc,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => DaycareScreen(
+                                  classDetails: results[index],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      )
                     ],
                   ),
                 ),
@@ -492,3 +414,134 @@ class SearchScreen extends StatelessWidget {
 //     print(selectedVal);
 //   }
 // }
+
+
+// Text(
+//   'ما الذى تبحث عنه ؟',
+//   style: TextStyle(
+//     fontSize: 14,
+//     color: Color(0xFF273370),
+//     fontWeight: FontWeight.bold,
+//   ),
+// ),
+// SizedBox(
+//   height: 20,
+// ),
+// Column(
+//   children: [
+//     Row(
+//       children: [
+//         Container(
+//           height: 40,
+//           width: MediaQuery.of(context).size.width * 0.35,
+//           decoration: BoxDecoration(
+//             border: Border.all(color: Color(0xFFAAAAAA)),
+//             borderRadius: BorderRadius.circular(10),
+//           ),
+//           child: Center(
+//               child: Text(
+//             'تواصل معنا',
+//             style: TextStyle(
+//                 fontSize: 10, color: Color(0xFFAAAAAA)),
+//           )),
+//         ),
+//         SizedBox(
+//           width: 10,
+//         ),
+//         Container(
+//           height: 40,
+//           width: MediaQuery.of(context).size.width * 0.35,
+//           decoration: BoxDecoration(
+//             border: Border.all(color: Color(0xFFAAAAAA)),
+//             borderRadius: BorderRadius.circular(10),
+//           ),
+//           child: Center(
+//               child: Text(
+//             'السياسة والانظمة',
+//             style: TextStyle(
+//                 fontSize: 10, color: Color(0xFFAAAAAA)),
+//           )),
+//         ),
+//       ],
+//     ),
+//     SizedBox(
+//       height: 10,
+//     ),
+//     Row(
+//       children: [
+//         Container(
+//           height: 40,
+//           width: MediaQuery.of(context).size.width * 0.4,
+//           decoration: BoxDecoration(
+//             border: Border.all(color: Color(0xFFAAAAAA)),
+//             borderRadius: BorderRadius.circular(10),
+//           ),
+//           child: Center(
+//               child: Text(
+//             'اقسام المركز',
+//             style: TextStyle(
+//                 fontSize: 12, color: Color(0xFFAAAAAA)),
+//           )),
+//         ),
+//         SizedBox(
+//           width: 10,
+//         ),
+//         Container(
+//           height: 40,
+//           width: MediaQuery.of(context).size.width * 0.3,
+//           decoration: BoxDecoration(
+//             border: Border.all(color: Color(0xFFAAAAAA)),
+//             borderRadius: BorderRadius.circular(10),
+//           ),
+//           child: Center(
+//             child: Text(
+//               'خدمات المركز',
+//               style: TextStyle(
+//                   fontSize: 10, color: Color(0xFFAAAAAA)),
+//             ),
+//           ),
+//         ),
+//       ],
+//     ),
+//     SizedBox(
+//       height: 10,
+//     ),
+//     Row(
+//       children: [
+//         Container(
+//           height: 40,
+//           width: MediaQuery.of(context).size.width * 0.3,
+//           decoration: BoxDecoration(
+//             border: Border.all(color: Color(0xFFAAAAAA)),
+//             borderRadius: BorderRadius.circular(10),
+//           ),
+//           child: Center(
+//             child: Text(
+//               'من نحن',
+//               style: TextStyle(
+//                   fontSize: 10, color: Color(0xFFAAAAAA)),
+//             ),
+//           ),
+//         ),
+//         SizedBox(
+//           width: 10,
+//         ),
+//         Container(
+//           height: 40,
+//           width: MediaQuery.of(context).size.width * 0.4,
+//           decoration: BoxDecoration(
+//             border: Border.all(color: Color(0xFFAAAAAA)),
+//             borderRadius: BorderRadius.circular(10),
+//           ),
+//           child: Center(
+//             child: Text(
+//               'حصص الفنون و الأنشطة',
+//               style: TextStyle(
+//                   fontSize: 10, color: Color(0xFFAAAAAA)),
+//             ),
+//           ),
+//         ),
+//       ],
+//     ),
+//   ],
+// ),

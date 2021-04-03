@@ -23,7 +23,7 @@ class LoginController {
     http.Response response = await http.post(url, headers: {
       'authorization': basicAuth,
       'Authorization': 'Basic $basicAuth',
-      'Cookie': 'PHPSESSID=dd3667b54c7e3d25c556cbaffd745863',
+      'Cookie': 'PHPSESSID=8c700251b0fc794cb19c47ccc54da3a8; pll_language=en',
       'User-Agent': 'PostmanRuntime/7.26.10',
       'Content-Length': '0',
       'Accept': '*/*',

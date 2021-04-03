@@ -237,7 +237,9 @@ class _Home1ScreenState extends State<Home1Screen> {
                                 // Navigator.push(
                                 //   context,
                                 //   MaterialPageRoute(
-                                //     builder: (_) => DaycareScreen(),
+                                //     builder: (_) => DaycareScreen(
+                                //       // classDetails: controller.listOfService[i],
+                                //     ),
                                 //   ),
                                 // );
                               },
@@ -253,6 +255,7 @@ class _Home1ScreenState extends State<Home1Screen> {
                                 child: Center(
                                   child: Container(
                                     height: 90,
+                                    padding: EdgeInsets.symmetric(horizontal: 10),
                                     width:
                                         MediaQuery.of(context).size.width * 0.6,
                                     decoration: BoxDecoration(
@@ -272,6 +275,8 @@ class _Home1ScreenState extends State<Home1Screen> {
                                             fontWeight: FontWeight.w500,
                                             fontSize: 12,
                                           ),
+                                          overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.center,
                                         ),
                                         SizedBox(
                                           height: 5,
@@ -291,8 +296,10 @@ class _Home1ScreenState extends State<Home1Screen> {
                                           '${controller.listOfService[i].shortDesc}',
                                           style: TextStyle(
                                             color: Colors.white,
-                                            fontSize: 12,
+                                            fontSize: 11,
                                           ),
+                                          overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.center,
                                         ),
                                       ],
                                     ),

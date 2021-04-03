@@ -92,7 +92,8 @@ class _CenterClassesScreenState extends State<CenterClassesScreen> {
                             context,
                             MaterialPageRoute(
                               builder: (_) => DaycareScreen(
-                                  controller.listOfClasses[index]),
+                                classDetails: controller.listOfClasses[index],
+                              ),
                             ),
                           );
                         },

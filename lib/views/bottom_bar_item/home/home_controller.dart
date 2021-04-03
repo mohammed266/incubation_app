@@ -8,7 +8,7 @@ class HomeController {
   List<ServiceModel> listOfService = [];
   bool loading = true;
 
-  getSliderData() async {
+  Future getSliderData() async {
     String url =
         "https://superheroesland.com/wp-json/siteapi/v1/options/slider";
 

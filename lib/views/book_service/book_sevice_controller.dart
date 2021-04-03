@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:incubation_app/shared/shared_helper.dart';
 import 'package:incubation_app/shared/toast.dart';
 import 'package:incubation_app/views/book_service/models/children.dart';
 import 'package:incubation_app/views/book_service/models/services.dart';
@@ -49,8 +50,8 @@ class BookServiceController {
   Future sendBookService({childId , serviceId,date}) async {
     String url = "https://superheroesland.com/wp-json/siteapi/v1/service/booking/$serviceId";
 
-    String username = '01021692654';
-    String password = 'sayed123';
+    String username = SharedHelper.phone;
+    String password = SharedHelper.password;
     String basicAuth = 'Basic ' + base64Encode(utf8.encode('$username:$password'));
 
     http.Response response = await http.post(url,
